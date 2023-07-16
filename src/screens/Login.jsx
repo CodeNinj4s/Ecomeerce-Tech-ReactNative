@@ -40,12 +40,7 @@ export const Login = () => {
                 </TouchableText>
 
                 <View style={styles.icons}>
-                    <View style={styles.facebook}>
-                    <Text>F</Text>
-                    </View>
-                    <View style={styles.google}>
-                        <Text>G</Text>
-                    </View>
+                  
                 </View>
             </View>
         </View>
@@ -55,7 +50,7 @@ export const Login = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#D9D9D9',
+        backgroundColor: theme.colors.background,
     },
     icons:{
         marginTop: '5%',
@@ -84,7 +79,7 @@ const styles = StyleSheet.create({
 
     header: {
         flex: 1,
-        alignItems: 'left',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         margin: 10,
     },

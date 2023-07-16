@@ -10,6 +10,6 @@ export const theme = {
         secondary: "#DB3022",
         error: "#D8D2CB",
         terciario: "#e0dfde",
-        background: "#D9D9D9"
+        background: "#F9F9F9"
     },
 };
