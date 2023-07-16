@@ -23,7 +23,11 @@ export const Login = ({navigation}) => {
                             <Text>¿No tienes una cuenta? 🠪</Text>
                         </TouchableText>
                     </View>
-
+                    <View style={styles.textouch}>
+                        <TouchableText onPress={() => navigation.navigate('ForgetPassword')}>
+                            <Text>¿Olvidaste tu contraseña? 🠪</Text>
+                        </TouchableText>
+                    </View>
                     <Button
                         titleStyle={{ fontSize: 17 }}
                         contentContainerStyle={{ height: 50 }}
