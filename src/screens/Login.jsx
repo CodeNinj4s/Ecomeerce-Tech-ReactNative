@@ -5,7 +5,7 @@ import TouchableText from "../components/TextTouch";
 import { Stack, Button } from "@react-native-material/core";
 import { theme } from "../core/theme";
 
-export const Login = () => {
+export const Login = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -19,8 +19,8 @@ export const Login = () => {
                         style={{ margin: 16 }} />
 
                     <View style={styles.textouch}>
-                        <TouchableText>
-                            <Text>¿Olvidaste la Contraseña? 🠪</Text>
+                        <TouchableText onPress={() => navigation.navigate('Register')}>
+                            <Text>¿No tienes una cuenta? 🠪</Text>
                         </TouchableText>
                     </View>
 
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
 
     header: {
         flex: 1,
-        alignItems: 'left',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         margin: 10,
     },
