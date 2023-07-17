@@ -20,7 +20,7 @@ export const AddressRegister = ({navigation}) => {
             </View>
 
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.textButton} onPress={() => navigation.navigate('AddressRegister')}>Continuar</Text>
+                <Text style={styles.textButton} onPress={() => navigation.navigate('MainStore')}>Continuar</Text>
             </TouchableOpacity>
         </View>
     );
