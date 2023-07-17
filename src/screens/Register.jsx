@@ -16,7 +16,7 @@ export const Register = ({navigation}) => {
                 </TouchableText>
             </View>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.textButton}>Registrarse</Text>
+                <Text style={styles.textButton} onPress={() => navigation.navigate('AddressRegister')}>Registrarse</Text>
             </TouchableOpacity>
         </View>
     );
