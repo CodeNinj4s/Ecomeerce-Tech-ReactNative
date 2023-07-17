@@ -1,20 +1,20 @@
 import React from 'react'
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 
-export const ProductSlidder = ({ slidderTitle, DATA }) => {
+export const ProductSlidderHorizontal = ({ slidderTitle, DATA }) => {
     return (
         <View style={styles.categorieView}>
-                <Text style={styles.categorieTitle}>{slidderTitle}</Text>
-                <FlatList data={DATA} horizontal showsHorizontalScrollIndicator={false} keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.cardProduct}>
-                        <View style={styles.image}></View>
-                        <Text numberOfLines={1} style={styles.productName}>{item.name}</Text>
-                        <Text>{item.price} MXN</Text>
-                        <Text>Stock: {item.stock}</Text>
-                    </View>
-                )}/>
-            </View>
+            <Text style={styles.categorieTitle}>{slidderTitle}</Text>
+            <FlatList data={DATA} horizontal showsHorizontalScrollIndicator={false} keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+                <View style={styles.cardProduct}>
+                    <View style={styles.image}></View>
+                    <Text numberOfLines={1} style={styles.productName}>{item.name}</Text>
+                    <Text>{item.price} MXN</Text>
+                    <Text>Stock: {item.stock}</Text>
+                </View>
+            )}/>
+        </View>
     )
 }
 

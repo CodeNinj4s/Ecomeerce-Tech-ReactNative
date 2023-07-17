@@ -1,16 +1,9 @@
 import {StyleSheet, Text, View, FlatList, ScrollView} from 'react-native';
-import { ProductSlidder } from '../components/ProductSlidder';
+import { ProductSlidderHorizontal } from '../components/ProductSlidderHorizontal';
+import { ProductSlidderVertical } from '../components/ProductSlidderVertical';
 import { TextInput } from "@react-native-material/core";
 import TouchableText from "../components/TextTouch";
 import {theme} from '../core/theme.js'
-
-const CATEGORIES = [
-    { id: '1', text: 'Todas', activo: true },
-    { id: '2', text: 'Monitores', activo: false },
-    { id: '3', text: 'Teclados', activo: false  },
-    { id: '4', text: 'Ratones', activo: false  },
-    { id: '5', text: 'Componentes', activo: false }
-];
 
 const PRODUCTS = [
     { id: '1', name: 'HP 24 fw with Audio Stereo', price: '2800', stock: '24'},
@@ -19,44 +12,64 @@ const PRODUCTS = [
     { id: '4', name: 'Sony 32 pl 4K', price: '4800', stock: '10'}
 ];
 
+const CATEGORIES = [
+    { id: '1', text: 'Todas', activo: true, data: PRODUCTS },
+    { id: '2', text: 'Monitores', activo: false, data: PRODUCTS },
+    { id: '3', text: 'Teclados', activo: false, data: PRODUCTS  },
+    { id: '4', text: 'Ratones', activo: false, data: PRODUCTS  },
+    { id: '5', text: 'Componentes', activo: false, data: PRODUCTS }
+];
+
 export const MainStore = ({navigation}) => {
     return(
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Tienda</Text>
+        <View>
+            <ScrollView contentContainerStyle={styles.container}>
+                <Text style={styles.title}>Tienda</Text>
 
-            <FlatList style={styles.categories} data={CATEGORIES} horizontal showsHorizontalScrollIndicator={false} keyExtractor={item => item.id}
-                renderItem={({ item }) => {
-                    if(item.activo){
-                        return (
-                            <View>
-                                <TouchableText>
-                                    <Text style={[styles.item, styles.itemBlue]}>{item.text}</Text>
-                                </TouchableText>
-                            </View>
-                        )
-                    } else{
-                        return (
-                            <View>
-                                <TouchableText>
-                                    <Text style={[styles.item, styles.itemBlack]}>{item.text}</Text>
-                                </TouchableText>
-                            </View>
-                        )
-                    }
-                    
-                }}
-            />
+                <FlatList style={styles.categories} data={CATEGORIES} horizontal showsHorizontalScrollIndicator={false} keyExtractor={item => item.id}
+                    renderItem={({ item }) => {
+                        if(item.activo){
+                            return (
+                                <View>
+                                    <TouchableText>
+                                        <Text style={[styles.item, styles.itemBlue]}>{item.text}</Text>
+                                    </TouchableText>
+                                </View>
+                            )
+                        } else{
+                            return (
+                                <View>
+                                    <TouchableText>
+                                        <Text style={[styles.item, styles.itemBlack]}>{item.text}</Text>
+                                    </TouchableText>
+                                </View>
+                            )
+                        }
+                        
+                    }}
+                />
 
-            { CATEGORIES.find(item => item.id === '1' && item.activo) && (
-                <>
-                    <ProductSlidder slidderTitle={'Monitores'} DATA={PRODUCTS}></ProductSlidder>
-        
-                    <ProductSlidder slidderTitle={'Teclados'} DATA={PRODUCTS}></ProductSlidder>
-        
-                    <ProductSlidder slidderTitle={'Ratones'} DATA={PRODUCTS}></ProductSlidder>
-                </>
-            )}
-        </ScrollView>
+                { CATEGORIES.find(item => item.id === '1' && item.activo) && (
+                    <>
+                        <ProductSlidderHorizontal slidderTitle={'Monitores'} DATA={PRODUCTS}></ProductSlidderHorizontal>
+            
+                        <ProductSlidderHorizontal slidderTitle={'Teclados'} DATA={PRODUCTS}></ProductSlidderHorizontal>
+            
+                        <ProductSlidderHorizontal slidderTitle={'Ratones'} DATA={PRODUCTS}></ProductSlidderHorizontal>
+                    </>
+                )}
+
+                
+            </ScrollView>
+
+            <View style={styles.container}>
+                { CATEGORIES.find(item => item.id === '1' && !item.activo) && (
+                    <>
+                        <ProductSlidderVertical slidderTitle={CATEGORIES.find(item => item.activo === true).text} DATA={CATEGORIES.find(item => item.activo === true).data}></ProductSlidderVertical>
+                    </>
+                )} 
+            </View>
+        </View>
     );
 }
 
@@ -65,7 +78,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: theme.colors.background,
         paddingBottom: 30
     },
     title: {
