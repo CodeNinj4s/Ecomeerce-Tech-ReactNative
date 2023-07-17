@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Login } from './src/screens/Login';
 import { Register } from "./src/screens/Register";
 import { AddressRegister } from "./src/screens/AddressRegister";
+import { ForgetPassword } from "./src/screens/ForgetPassword";
 
 
 const Stack = createNativeStackNavigator();
@@ -20,6 +21,7 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="AddressRegister" component={AddressRegister}/>
+        <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       </Stack.Navigator>
     </NavigationContainer>
   );
