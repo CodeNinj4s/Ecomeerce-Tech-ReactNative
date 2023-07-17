@@ -10,13 +10,13 @@ export const AddressRegister = ({navigation}) => {
             <Text style={styles.titleRegister}>Dirección de envío</Text>
             <Text style={styles.description}>Registre la dirección de envío para sus productos</Text>
             
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Estado' placeholder='Ejemplo: Oaxaca'/>
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Ciudad' placeholder='Ejemplo: Oaxaca de Juárez'/>
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Colonia' placeholder='Ejemplo: Centro'/>
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Calle' placeholder='Ejemplo: Independencia'/>
+            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Estado'/>
+            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Ciudad'/>
+            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Colonia'/>
+            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Calle'/>
             <View style={styles.col2}>
-                <TextInput color={theme.colors.primary} inputContainerStyle={styles.input50} label='Numero' placeholder='Ejemplo: 147'/>
-                <TextInput color={theme.colors.primary} inputContainerStyle={styles.input50} label='Código postal' placeholder='Ejemplo: 68001'/>
+                <TextInput color={theme.colors.primary} inputContainerStyle={styles.input50} label='Numero'/>
+                <TextInput color={theme.colors.primary} inputContainerStyle={styles.input50} label='Código postal'/>
             </View>
 
             <TouchableOpacity style={styles.button}>
