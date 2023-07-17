@@ -29,13 +29,17 @@ export const MainStore = ({navigation}) => {
                     if(item.activo){
                         return (
                             <View>
-                                <Text style={[styles.item, styles.itemBlue]}>{item.text}</Text>
+                                <TouchableText>
+                                    <Text style={[styles.item, styles.itemBlue]}>{item.text}</Text>
+                                </TouchableText>
                             </View>
                         )
                     } else{
                         return (
                             <View>
-                                <Text style={[styles.item, styles.itemBlack]}>{item.text}</Text>
+                                <TouchableText>
+                                    <Text style={[styles.item, styles.itemBlack]}>{item.text}</Text>
+                                </TouchableText>
                             </View>
                         )
                     }
@@ -43,11 +47,15 @@ export const MainStore = ({navigation}) => {
                 }}
             />
 
-            <ProductSlidder slidderTitle={'Monitores'} DATA={PRODUCTS}></ProductSlidder>
-
-            <ProductSlidder slidderTitle={'Teclados'} DATA={PRODUCTS}></ProductSlidder>
-
-            <ProductSlidder slidderTitle={'Ratones'} DATA={PRODUCTS}></ProductSlidder>
+            { CATEGORIES.find(item => item.id === '1' && item.activo) && (
+                <>
+                    <ProductSlidder slidderTitle={'Monitores'} DATA={PRODUCTS}></ProductSlidder>
+        
+                    <ProductSlidder slidderTitle={'Teclados'} DATA={PRODUCTS}></ProductSlidder>
+        
+                    <ProductSlidder slidderTitle={'Ratones'} DATA={PRODUCTS}></ProductSlidder>
+                </>
+            )}
         </ScrollView>
     );
 }
