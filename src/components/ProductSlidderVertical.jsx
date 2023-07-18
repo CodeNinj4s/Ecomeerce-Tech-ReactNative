@@ -4,8 +4,7 @@ import {StyleSheet, Text, View, FlatList} from 'react-native';
 export const ProductSlidderVertical = ({ slidderTitle, DATA }) => {
     return (
         <>
-            <Text style={styles.categorieTitle}>{slidderTitle}</Text>
-            <FlatList data={ DATA } keyExtractor={item => item.id} numColumns={2} contentContainerStyle={styles.contentContainer}
+            <FlatList data={ DATA } ListHeaderComponent={<Text style={styles.categorieTitle}>{slidderTitle}</Text>} keyExtractor={item => item.id} numColumns={2} contentContainerStyle={styles.contentContainer}
             renderItem={({ item }) => (
                 <View style={styles.cardProduct}>
                     <View style={styles.image}></View>
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
         width: '100%',
         fontSize: 32,
         fontWeight: 600,
-        paddingLeft: 20,
+        paddingLeft: 10,
     },
     cardProduct: {
         padding: 12,
@@ -49,6 +48,7 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap'
     },
     contentContainer: {
-        flexDirection: 'column'
+        flexDirection: 'column',
+        paddingHorizontal: 10
     }
 });
