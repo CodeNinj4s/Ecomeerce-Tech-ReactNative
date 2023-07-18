@@ -1,22 +1,56 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import TouchableText from "../components/TextTouch";
 import { TextInput } from "@react-native-material/core";
-import {theme} from '../core/theme.js'
+import { theme } from '../core/theme.js'
+import { useForm } from '../hooks/useForm';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../database/firebase';
 
-export const Register = ({navigation}) => {
-    return(
+export const Register = ({ navigation }) => {
+
+    const { onInputChange, correo, contraseña } = useForm({
+        correo: '',
+        contraseña: '',
+    })
+
+    const handleRegister = async () => {
+        try {
+            const credentialas = await createUserWithEmailAndPassword(auth, correo, contraseña)
+            const user = credentialas.user
+            alert('Usuario Creado')
+            navigation.navigate('Login')
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+
+    return (
         <View style={styles.container}>
             <Text style={styles.titleRegister}>Registrarse</Text>
-            <TextInput style={styles.inputCard} variant="outlined" label='Nombre' placeholder="Aquí va tu nombrecito lindo uwu"/>
-            <TextInput style={styles.inputCard} variant="outlined" label='Correo' placeholder="Aquí va tu nombrecito lindo uwu"/>
-            <TextInput style={styles.inputCard} variant="outlined" label='Contraseña' placeholder="Aquí va tu nombrecito lindo uwu"/>
+            <TextInput style={styles.inputCard} variant="outlined" label='Nombre' placeholder="Aquí va tu nombrecito lindo uwu" />
+            <TextInput style={styles.inputCard}
+                variant="outlined"
+                label='Correo'
+                placeholder="Aquí va tu nombrecito lindo uwu"
+                value={correo}
+                onChangeText={(value) => onInputChange('correo', value)}
+            />
+            <TextInput
+                style={styles.inputCard}
+                variant="outlined"
+                label='Contraseña'
+                placeholder="Aquí va tu nombrecito lindo uwu"
+                value={contraseña}
+                onChangeText={(value) => onInputChange('contraseña', value)}
+            />
             <View style={styles.viewLogin}>
                 <TouchableText onPress={() => navigation.navigate('Login')}>
                     <Text>¿Ya tienes una cuenta?</Text>
                 </TouchableText>
             </View>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.textButton} onPress={() => navigation.navigate('AddressRegister')}>Registrarse</Text>
+                <Text style={styles.textButton} onPress={handleRegister}>Registrarse</Text>
             </TouchableOpacity>
         </View>
     );
@@ -50,7 +84,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         marginBottom: 40
-    }, 
+    },
     button: {
         width: '100%',
         backgroundColor: theme.colors.primary,
