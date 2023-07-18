@@ -4,21 +4,28 @@ import { TextInput } from "@react-native-material/core";
 import { theme } from '../core/theme.js'
 import { useForm } from '../hooks/useForm';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../database/firebase';
+import { auth, db } from '../../database/firebase';
+import { addDocumento } from '../helpers/Rest';
 
 export const Register = ({ navigation }) => {
 
-    const { onInputChange, correo, contraseña } = useForm({
+    const { onInputChange, correo, contraseña, nombre } = useForm({
+        nombre: '',
         correo: '',
         contraseña: '',
     })
 
     const handleRegister = async () => {
         try {
-            const credentialas = await createUserWithEmailAndPassword(auth, correo, contraseña)
-            const user = credentialas.user
-            alert('Usuario Creado')
-            navigation.navigate('Login')
+
+            if (nombre.trim() !== '') {
+                const credentialas = await createUserWithEmailAndPassword(auth, correo, contraseña)
+                const user = credentialas.user
+                const id = user.uid
+                addDocumento("Usuario", { nombre: nombre, id: id })
+                navigation.navigate('AddressRegister', { nombre: nombre, id: id });
+            }
+
         } catch (e) {
             console.log(e)
         }
@@ -28,7 +35,14 @@ export const Register = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.titleRegister}>Registrarse</Text>
-            <TextInput style={styles.inputCard} variant="outlined" label='Nombre' placeholder="Aquí va tu nombrecito lindo uwu" />
+            <TextInput
+                style={styles.inputCard}
+                variant="outlined"
+                label='Nombre'
+                placeholder="Aquí va tu nombrecito lindo uwu"
+                value={nombre}
+                onChangeText={(value) => onInputChange('nombre', value)}
+            />
             <TextInput style={styles.inputCard}
                 variant="outlined"
                 label='Correo'
@@ -43,6 +57,8 @@ export const Register = ({ navigation }) => {
                 placeholder="Aquí va tu nombrecito lindo uwu"
                 value={contraseña}
                 onChangeText={(value) => onInputChange('contraseña', value)}
+                secureTextEntry={true}
+
             />
             <View style={styles.viewLogin}>
                 <TouchableText onPress={() => navigation.navigate('Login')}>
@@ -68,6 +84,7 @@ const styles = StyleSheet.create({
         width: '100%',
         fontSize: 42,
         fontWeight: '500',
+        marginTop: '25%'
     },
     inputCard: {
         width: '100%',
