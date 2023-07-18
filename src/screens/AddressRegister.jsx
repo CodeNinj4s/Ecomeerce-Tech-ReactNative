@@ -1,26 +1,72 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { TextInput } from "@react-native-material/core";
 import TouchableText from "../components/TextTouch";
-import {theme} from '../core/theme.js'
+import { theme } from '../core/theme.js'
+import { useForm } from '../hooks/useForm';
 
 
-export const AddressRegister = ({navigation}) => {
-    return(
+export const AddressRegister = ({ navigation, route }) => {
+    const { nombre, id } = route.params;
+    const { onInputChange, estado, ciudad, colonia, calle, numero, cp } = useForm({
+        estado: '',
+        ciudad: '',
+        colonia: '',
+        calle: '',
+        numero: '',
+        cp: ''
+    })
+    return (
         <View style={styles.container}>
             <Text style={styles.titleRegister}>Dirección de envío</Text>
             <Text style={styles.description}>Registre la dirección de envío para sus productos</Text>
-            
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Estado'/>
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Ciudad'/>
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Colonia'/>
-            <TextInput color={theme.colors.primary} inputContainerStyle={styles.input100} label='Calle'/>
+
+            <TextInput
+                color={theme.colors.primary}
+                inputContainerStyle={styles.input100}
+                label='Estado'
+                value={estado}
+                onChangeText={(value) => onInputChange('estado', value)}
+            />
+            <TextInput
+                color={theme.colors.primary}
+                inputContainerStyle={styles.input100}
+                label='Ciudad'
+                value={ciudad}
+                onChangeText={(value) => onInputChange('ciudad', value)}
+            />
+            <TextInput
+                color={theme.colors.primary}
+                inputContainerStyle={styles.input100}
+                label='Colonia'
+                value={colonia}
+                onChangeText={(value) => onInputChange('colonia', value)}
+            />
+            <TextInput
+                color={theme.colors.primary}
+                inputContainerStyle={styles.input100}
+                label='Calle'
+                value={calle}
+                onChangeText={(value) => onInputChange('calle', value)}
+            />
             <View style={styles.col2}>
-                <TextInput color={theme.colors.primary} inputContainerStyle={styles.input50} label='Numero'/>
-                <TextInput color={theme.colors.primary} inputContainerStyle={styles.input50} label='Código postal'/>
+                <TextInput
+                    color={theme.colors.primary}
+                    inputContainerStyle={styles.input50}
+                    label='Numero'
+                    value={numero}
+                    onChangeText={(value) => onInputChange('numero', value)}
+                />
+                <TextInput
+                    color={theme.colors.primary}
+                    inputContainerStyle={styles.input50}
+                    label='Código postal'
+                    value={cp}
+                    onChangeText={(value) => onInputChange('cp', value)}
+                />
             </View>
 
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.textButton} onPress={() => navigation.navigate('MainStore')}>Continuar</Text>
+                <Text style={styles.textButton} onPress={() => console.log(id)}>Continuar</Text>
             </TouchableOpacity>
         </View>
     );
