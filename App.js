@@ -7,7 +7,6 @@ import { Register } from "./src/screens/Register";
 import { AddressRegister } from "./src/screens/AddressRegister";
 import { ForgetPassword } from "./src/screens/ForgetPassword";
 import { MainStore } from "./src/screens/MainStore";
-import { Home } from "./src/screens/Home";
 
 
 const Stack = createNativeStackNavigator();
@@ -25,7 +24,6 @@ export default function App() {
         <Stack.Screen name="AddressRegister" component={AddressRegister} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="MainStore" component={MainStore} />
-        <Stack.Screen name="Home" component={Home} />
       </Stack.Navigator>
     </NavigationContainer>
   );
