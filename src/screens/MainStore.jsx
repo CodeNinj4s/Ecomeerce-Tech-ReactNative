@@ -25,7 +25,7 @@ const CATEGORIES = [
 
 export const MainStore = ({ navigation }) => {
     return (
-        <>
+        <View>
             <ScrollView contentContainerStyle={styles.container}>
                 <Text style={styles.title}>Tienda</Text>
 
