@@ -1,9 +1,8 @@
-import {StyleSheet, Text, View, FlatList, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native';
 import { ProductSlidderHorizontal } from '../components/ProductSlidderHorizontal';
 import { ProductSlidderVertical } from '../components/ProductSlidderVertical';
-import { TextInput } from "@react-native-material/core";
 import TouchableText from "../components/TextTouch";
-import {theme} from '../core/theme.js'
+import { theme } from '../core/theme.js'
 
 const PRODUCTS = [
     { id: '1', name: 'HP 24 fw with Audio Stereo', price: '2800', stock: '24'},
@@ -19,20 +18,20 @@ const PRODUCTS = [
 const CATEGORIES = [
     { id: '1', text: 'Todas', activo: true, data: PRODUCTS },
     { id: '2', text: 'Monitores', activo: false, data: PRODUCTS },
-    { id: '3', text: 'Teclados', activo: false, data: PRODUCTS  },
-    { id: '4', text: 'Ratones', activo: false, data: PRODUCTS  },
-    { id: '25', text: 'Componentes', activo: false, data: PRODUCTS }
+    { id: '3', text: 'Teclados', activo: false, data: PRODUCTS },
+    { id: '4', text: 'Ratones', activo: false, data: PRODUCTS },
+    { id: '5', text: 'Componentes', activo: false, data: PRODUCTS }
 ];
 
-export const MainStore = ({navigation}) => {
-    return(
-        <View>
+export const MainStore = ({ navigation }) => {
+    return (
+        <>
             <ScrollView contentContainerStyle={styles.container}>
                 <Text style={styles.title}>Tienda</Text>
 
                 <FlatList style={styles.categories} data={CATEGORIES} horizontal showsHorizontalScrollIndicator={false} keyExtractor={item => item.id}
                     renderItem={({ item }) => {
-                        if(item.activo){
+                        if (item.activo) {
                             return (
                                 <View>
                                     <TouchableText>
@@ -40,7 +39,7 @@ export const MainStore = ({navigation}) => {
                                     </TouchableText>
                                 </View>
                             )
-                        } else{
+                        } else {
                             return (
                                 <View>
                                     <TouchableText>
@@ -49,23 +48,23 @@ export const MainStore = ({navigation}) => {
                                 </View>
                             )
                         }
-                        
+
                     }}
                 />
 
-                { CATEGORIES.find(item => item.id === '1' && item.activo) && (
+                {CATEGORIES.find(item => item.id === '1' && item.activo) && (
                     <>
                         <ProductSlidderHorizontal slidderTitle={'Monitores'} DATA={PRODUCTS}></ProductSlidderHorizontal>
-            
+
                         <ProductSlidderHorizontal slidderTitle={'Teclados'} DATA={PRODUCTS}></ProductSlidderHorizontal>
-            
+
                         <ProductSlidderHorizontal slidderTitle={'Ratones'} DATA={PRODUCTS}></ProductSlidderHorizontal>
 
                         <ProductSlidderHorizontal slidderTitle={'Componentes'} DATA={PRODUCTS}></ProductSlidderHorizontal>
                     </>
                 )}
 
-                
+
             </ScrollView>
 
                 { CATEGORIES.find(item => item.id === '1' && !item.activo) && (
