@@ -20,12 +20,12 @@ export const Login = ({ navigation }) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, correo, contraseña);
             const user = userCredential.user;
-            // console.log('Exito xd')
+            console.log('Exito xd')
             // console.log(user);
             navigation.reset({
 
                 index: 0,
-                routes: [{ name: 'Home' }],
+                routes: [{ name: 'MainStore' }],
               });
         } catch (err) {
             console.log('Erroe al iniciar sesion', err)
