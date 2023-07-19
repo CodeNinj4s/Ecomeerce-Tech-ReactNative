@@ -25,7 +25,7 @@ const CATEGORIES = [
 
 export const MainStore = ({ navigation }) => {
     return (
-        <>
+        <View>
             <ScrollView contentContainerStyle={styles.container}>
                 <Text style={styles.title}>Tienda</Text>
 
@@ -34,7 +34,7 @@ export const MainStore = ({ navigation }) => {
                         if (item.activo) {
                             return (
                                 <View>
-                                    <TouchableText>
+                                    <TouchableText onPress={() => navigation.navigate('ProductBag')}>
                                         <Text style={[styles.item, styles.itemBlue]}>{item.text}</Text>
                                     </TouchableText>
                                 </View>
