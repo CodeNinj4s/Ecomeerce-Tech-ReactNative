@@ -34,7 +34,7 @@ export const MainStore = ({ navigation }) => {
                         if (item.activo) {
                             return (
                                 <View>
-                                    <TouchableText>
+                                    <TouchableText onPress={() => navigation.navigate('ProductBag')}>
                                         <Text style={[styles.item, styles.itemBlue]}>{item.text}</Text>
                                     </TouchableText>
                                 </View>
