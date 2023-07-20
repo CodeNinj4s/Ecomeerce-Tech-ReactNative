@@ -5,42 +5,49 @@ import TouchableText from "../components/TextTouch";
 import { theme } from '../core/theme.js'
 import { useEffect, useState } from 'react';
 import { db } from '../../database/firebase';
-import { collection, getDocs } from "firebase/firestore";;
+import { QuerySnapshot, collection, getDocs, onSnapshot } from "firebase/firestore";import { useIsFocused } from '@react-navigation/native';
+;
 
 export const MainStore = ({ navigation }) => {
     const [categorias, setCategorias] = useState([]);
     const [productos, setProductos] = useState([]);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         const obtenerDatos = async () => {
             try{
-                const categorias_bd = await getDocs(collection(db, "Categoria"));
-                const categoriasData = [
-                    { id: '0', categoria: 'Todas', activo: true }
-                ];
+                if(isFocused){
+                    const categorias_bd = await getDocs(collection(db, "Categoria"));
+                    const categoriasData = [
+                        { id: '0', categoria: 'Todas', activo: true }
+                    ];
+        
+                    categorias_bd.forEach((cat) => {
+                        categoriasData.push({ id: cat.id, categoria: cat.data().categoria, activo: false});
+                    });
     
-                categorias_bd.forEach((cat) => {
-                    categoriasData.push({ id: cat.id, categoria: cat.data().categoria, activo: false});
-                });
+                    setCategorias(categoriasData);
+    
+                    const productos_bd = onSnapshot(collection(db, 'Producto'), (querySnapshot) => {
+                        const productosData = [];
 
-                setCategorias(categoriasData);
+                        querySnapshot.forEach((prod) => {
+                            // console.log(prod.data().categoria._key.path.segments[6]);
+                            productosData.push( { id: prod.id, data: prod.data() } );
+                        });
 
-                const productos_bd = await getDocs(collection(db, 'Producto'));
-                const productosData = [];
-
-                productos_bd.forEach((prod) => {
-                    // console.log(prod.data().categoria._key.path.segments[6]);
-                    productosData.push( { id: prod.id, data: prod.data() } );
-                });
-
-                setProductos(productosData);
+                        setProductos(productosData);
+                    });
+    
+                    return () => productos_bd();
+                }
             } catch(e){
                 console.log(e);
             }        
         };
 
         obtenerDatos();
-    }, []);
+    }, [isFocused]);
 
     const handleUpdateActivo = (id) => {
         setCategorias((prevCategorias) => {
