@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList, Image} from 'react-native';
 
 export const ProductSlidderHorizontal = ({ slidderTitle, DATA }) => {
     return (
@@ -8,10 +8,10 @@ export const ProductSlidderHorizontal = ({ slidderTitle, DATA }) => {
             <FlatList data={DATA} horizontal showsHorizontalScrollIndicator={false} keyExtractor={item => item.id}
             renderItem={({ item }) => (
                 <View style={styles.cardProduct}>
-                    <View style={styles.image}></View>
-                    <Text numberOfLines={1} style={styles.productName}>{item.name}</Text>
-                    <Text>{item.price} MXN</Text>
-                    <Text>Stock: {item.stock}</Text>
+                    <Image source={{ uri: item.data.url_imagen }} style={styles.image}/>
+                    <Text numberOfLines={1} style={styles.productName}>{item.data.nombre}</Text>
+                    <Text>{item.data.precio} MXN</Text>
+                    <Text>Stock: {item.data.cantidad}</Text>
                 </View>
             )}/>
         </View>
