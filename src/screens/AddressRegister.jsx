@@ -3,10 +3,15 @@ import { TextInput } from "@react-native-material/core";
 import TouchableText from "../components/TextTouch";
 import { theme } from '../core/theme.js'
 import { useForm } from '../hooks/useForm';
+import { addDocumento } from '../helpers/Rest';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../../database/firebase';
+import { addDoc, collection } from '@firebase/firestore';
 
 
 export const AddressRegister = ({ navigation, route }) => {
-    const { nombre, id } = route.params;
+    const { nombre, correo, pass } = route.params;
+
     const { onInputChange, estado, ciudad, colonia, calle, numero, cp } = useForm({
         estado: '',
         ciudad: '',
@@ -14,7 +19,25 @@ export const AddressRegister = ({ navigation, route }) => {
         calle: '',
         numero: '',
         cp: ''
-    })
+    });
+
+    const handleRegister = async () => {
+        try{
+            if(estado.trim() !== '' && ciudad.trim() !== '' && colonia.trim() !== '' && calle.trim() !== '' && numero.trim() !== '' && cp.trim() !== ''){
+                const credentialas = await createUserWithEmailAndPassword(auth, correo, pass)
+                const user = credentialas.user
+                const id = user.uid
+
+                const envio = await addDoc(collection(db, "Envio"), {calle: calle, ciudad: ciudad, codigoPostal: cp, colonia: colonia, estado: estado, numero: numero});
+                addDocumento("Usuario", { nombre: nombre, id: id, idEnvio: envio.id, tipo: 'cliente', password: pass })
+
+                navigation.navigate('MainStore');
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.titleRegister}>Dirección de envío</Text>
@@ -66,7 +89,7 @@ export const AddressRegister = ({ navigation, route }) => {
             </View>
 
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.textButton} onPress={() => console.log(id)}>Continuar</Text>
+                <Text style={styles.textButton} onPress={handleRegister}>Continuar</Text>
             </TouchableOpacity>
         </View>
     );

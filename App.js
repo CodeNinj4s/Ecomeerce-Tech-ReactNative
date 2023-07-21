@@ -9,6 +9,8 @@ import { ForgetPassword } from "./src/screens/ForgetPassword";
 import { MainStore } from "./src/screens/MainStore";
 import { OrderDelivery } from "./src/screens/Map/OrderDelivery";
 
+import { ProductBag } from "./src/screens/ProductBag";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +28,7 @@ export default function App() {
         <Stack.Screen name="AddressRegister" component={AddressRegister} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="MainStore" component={MainStore} />
+        <Stack.Screen name="ProductBag" component={ProductBag} />
       </Stack.Navigator>
     </NavigationContainer>
   );

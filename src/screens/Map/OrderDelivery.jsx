@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 import GOOGLE_API_KEY from '../../helpers/maps';
 
 
-const api = GOOGLE_API_KEY; // Reemplaza esto con tu clave de API
+const api = GOOGLE_API_KEY;
 
 export const OrderDelivery = () => {
     const mapView = useRef();
@@ -75,7 +75,6 @@ export const OrderDelivery = () => {
     }, []);
 
     function calculateAngle(coordinates) {
-        // ... (resto del código para calcular el ángulo)
         let startLat = coordinates[0]["latitude"]
         let startLng = coordinates[0]["longitude"]
         let endLat = coordinates[1]["latitude"]

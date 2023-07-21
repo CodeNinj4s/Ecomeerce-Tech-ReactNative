@@ -19,11 +19,7 @@ export const Register = ({ navigation }) => {
         try {
 
             if (nombre.trim() !== '') {
-                const credentialas = await createUserWithEmailAndPassword(auth, correo, contraseña)
-                const user = credentialas.user
-                const id = user.uid
-                addDocumento("Usuario", { nombre: nombre, id: id })
-                navigation.navigate('AddressRegister', { nombre: nombre, id: id });
+                navigation.navigate('AddressRegister', { nombre: nombre, correo: correo, pass: contraseña });
             }
 
         } catch (e) {
