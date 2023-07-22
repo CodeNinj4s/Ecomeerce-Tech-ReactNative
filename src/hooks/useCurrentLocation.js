@@ -11,10 +11,7 @@ const useCurrentLocation = () => {
     });
 
     useEffect(() => {
-        let isMounted = true;
-        let updateInterval;
-
-        const getLocation = async () => {
+        (async () => {
             try {
                 const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -23,40 +20,34 @@ const useCurrentLocation = () => {
                     return;
                 }
 
-                const updateLocation = async () => {
-                    const location = await Location.getCurrentPositionAsync({});
-                    const { latitude, longitude } = location.coords;
+                const location = await Location.getCurrentPositionAsync({});
+                const { latitude, longitude } = location.coords;
 
-                    // Geocodificación inversa para obtener el nombre de la calle
-                    const reverseGeocode = await Location.reverseGeocodeAsync({ latitude, longitude });
-                    const streetName = reverseGeocode.length > 0 ? reverseGeocode[0].street : '';
+                // Geocodificación inversa para obtener el nombre de la calle
+                const reverseGeocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+                const streetName = reverseGeocode.length > 0 ? reverseGeocode[0].street : '';
 
-                    if (isMounted) {
+                Location.watchPositionAsync(
+                    {
+                        accuracy: Location.Accuracy.High,
+                        timeInterval: 5000, // Cada 5 segundos se actualiza la ubicación
+                        distanceInterval: 10, // Cada 
+                    },
+                    (location) => {
                         setCurrentLocationData({
                             streetName,
                             gps: {
-                                latitude,
-                                longitude,
+                                latitude: location.coords.latitude,
+                                longitude: location.coords.longitude,
                             },
                         });
                     }
-                };
+                )
 
-                // Actualiza la ubicación inicial
-                await updateLocation();
-
-                updateInterval = setInterval(updateLocation, 5000);
             } catch (error) {
                 console.log('Error al obtener la ubicación:', error);
             }
-        };
-
-        getLocation();
-
-        return () => {
-            isMounted = false;
-            clearInterval(updateInterval);
-        };
+        })();
     }, []);
 
     return currentLocationData;

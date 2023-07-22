@@ -42,28 +42,40 @@ export const OrderDelivery = ({ navigation }) => {
     };
 
 
+    // useEffect(() => {
+    //     const locationUpdateInterval = setInterval(() => {
+    //         setCurrentLocation();
+    //     }, 10000);
+
+    //     // Limpia el intervalo cuando el componente se desmonte.
+    //     return () => clearInterval(locationUpdateInterval);
+    // }, []);
+
     useEffect(() => {
+        setCurrentLocation();
+    }, [currentLocation]);
+
+    function setCurrentLocation() {
         let fromLoc;
         let street;
         let toLoc = destinationLocationData;
         if (currentLocation && currentLocation.gps) {
             fromLoc = currentLocation.gps;
-            street = currentLocation.streetName
+            street = currentLocation.streetName;
         }
         let mapRegion = {
             latitude: (fromLoc.latitude + toLoc.latitude) / 2,
             longitude: (fromLoc.longitude + toLoc.longitude) / 2,
             latitudeDelta: Math.abs(fromLoc.latitude - toLoc.latitude) * 2,
-            longitudeDelta: Math.abs(fromLoc.longitude - toLoc.longitude) * 2
-        }
-        setStreetName(street)
-        setFromLocation(fromLoc)
-        setToLocation(toLoc)
-        setRegion(mapRegion)
+            longitudeDelta: Math.abs(fromLoc.longitude - toLoc.longitude) * 2,
+        };
+        setStreetName(street);
+        setFromLocation(fromLoc);
+        setToLocation(toLoc);
+        setRegion(mapRegion);
         setStoreLocation(storeLocationData);
-
-    }, [])
-
+        // console.log('hola');
+    }
 
     function calculateAngle(coordinates) {
         let startLat = coordinates[0]["latitude"]
