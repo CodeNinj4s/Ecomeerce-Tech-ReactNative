@@ -23,10 +23,12 @@ const useCurrentLocation = () => {
                 const location = await Location.getCurrentPositionAsync({});
                 const { latitude, longitude } = location.coords;
 
-
+                // Geocodificación inversa para obtener el nombre de la calle
+                const reverseGeocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+                const streetName = reverseGeocode.length > 0 ? reverseGeocode[0].street : '';
 
                 setCurrentLocationData({
-                    streetName: 'Ruiz cortines',
+                    streetName,
                     gps: {
                         latitude,
                         longitude,

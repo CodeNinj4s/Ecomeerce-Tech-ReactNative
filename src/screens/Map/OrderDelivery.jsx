@@ -9,7 +9,7 @@ import icons from '../../../assets/icons/icons,'
 import {
     Image, Text, View, TouchableOpacity
 } from 'react-native';
-export const OrderDelivery = ({navigation}) => {
+export const OrderDelivery = ({ navigation }) => {
     const mapView = useRef()
     const [streetName, setStreetName] = useState("")
     const [fromLocation, setFromLocation] = useState(null)
@@ -20,6 +20,7 @@ export const OrderDelivery = ({navigation}) => {
     const [isReady, setIsReady] = useState(false)
     const [angle, setAngle] = useState(0)
     const currentLocation = useCurrentLocation()
+    const [storeLocation, setStoreLocation] = useState(null);
 
     // const currentLocationData = {
     //     streetName: 'Ruiz cortines',
@@ -30,9 +31,16 @@ export const OrderDelivery = ({navigation}) => {
     // };
 
     const destinationLocationData = {
-        latitude: 17.07806828245917,
-        longitude: -96.74404220614363,
+        latitude: 17.056969,
+        longitude: -96.730048,
     };
+
+
+    const storeLocationData = {
+        latitude: 17.077792,
+        longitude: -96.745168,
+    };
+
 
     useEffect(() => {
         let fromLoc;
@@ -52,6 +60,8 @@ export const OrderDelivery = ({navigation}) => {
         setFromLocation(fromLoc)
         setToLocation(toLoc)
         setRegion(mapRegion)
+        setStoreLocation(storeLocationData);
+
     }, [])
 
 
@@ -126,6 +136,7 @@ export const OrderDelivery = ({navigation}) => {
                     </View>
                 </View>
             </Marker>
+
         )
 
         const carIcon = () => (
@@ -136,14 +147,48 @@ export const OrderDelivery = ({navigation}) => {
                 rotation={angle}
             >
                 <Image
-                    source={icons.car}
+                    source={icons.carroza}
                     style={{
-                        width: 40,
-                        height: 40
+                        width: 50,
+                        height: 50
                     }}
                 />
             </Marker>
         )
+
+        const storeMarker = () => (
+            <Marker
+                coordinate={storeLocation}
+            >
+                <View
+                    style={{
+                        height: 40,
+                        width: 40,
+                        borderRadius: 20,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <View
+                        style={{
+                            height: 30,
+                            width: 30,
+                            borderRadius: 15,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Image
+                            source={icons.store}
+                            style={{
+                                width: 50,
+                                height: 50,
+                            }}
+                        />
+                    </View>
+                </View>
+            </Marker>
+        );
 
         return (
             <View style={{ flex: 1 }}>
@@ -192,6 +237,7 @@ export const OrderDelivery = ({navigation}) => {
                     />
                     {destinationMarker()}
                     {carIcon()}
+                    {storeMarker()}
                 </MapView>
             </View>
         )
@@ -265,10 +311,10 @@ export const OrderDelivery = ({navigation}) => {
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {/* Avatar */}
                         <Image
-                            source={icons.avatar_1}
+                            source={icons.cena}
                             style={{
-                                width: 50,
-                                height: 50,
+                                width: 55,
+                                height: 55,
                                 borderRadius: 25
                             }}
                         />
@@ -276,7 +322,7 @@ export const OrderDelivery = ({navigation}) => {
                         <View style={{ flex: 1, marginLeft: SIZES.padding }}>
                             {/* Name & Rating */}
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text >SWITECH</Text>
+                                <Text >Cena</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Image
                                         source={icons.star}
@@ -310,7 +356,7 @@ export const OrderDelivery = ({navigation}) => {
                             }}
                             onPress={() => navigation.navigate("MainStore")}
                         >
-                            <Text style={{ color: theme.colors.background }}>Call</Text>
+                            <Text style={{ color: theme.colors.background }}>Llama</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -324,7 +370,7 @@ export const OrderDelivery = ({navigation}) => {
                             }}
                             onPress={() => navigation.goBack()}
                         >
-                            <Text style={{ color: theme.colors.background }}>Cancel</Text>
+                            <Text style={{ color: theme.colors.background }}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -333,6 +379,49 @@ export const OrderDelivery = ({navigation}) => {
         )
     }
 
+    function renderButtons() {
+        return (
+            <View
+                style={{
+                    position: 'absolute',
+                    bottom: SIZES.height * 0.35,
+                    right: SIZES.padding * 2,
+                    width: 60,
+                    height: 130,
+                    justifyContent: 'space-between'
+                }}
+            >
+                <TouchableOpacity
+                    style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: 30,
+                        backgroundColor: theme.colors.background,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                    onPress={() => zoomIn()}
+                >
+                    <Text style={{ fontSize: 18 }}>+</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: 30,
+                        backgroundColor: theme.colors.background,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                    onPress={() => zoomOut()}
+                >
+                    <Text style={{ fontSize: 18 }}>-</Text>
+                </TouchableOpacity>
+            </View>
+
+        )
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -343,6 +432,7 @@ export const OrderDelivery = ({navigation}) => {
             {renderMap()}
             {renderDestinationHeader()}
             {renderDeliveryInfo()}
+            {renderButtons()}
         </View>
     );
 }
