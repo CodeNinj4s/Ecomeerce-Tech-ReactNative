@@ -1,18 +1,24 @@
-import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import { ProductSlidderHorizontal } from '../components/ProductSlidderHorizontal';
 import { ProductSlidderVertical } from '../components/ProductSlidderVertical';
 import TouchableText from "../components/TextTouch";
 import { theme } from '../core/theme.js'
 import { useEffect, useState } from 'react';
 import { db } from '../../database/firebase';
-import { QuerySnapshot, collection, getDocs, onSnapshot } from "firebase/firestore";import { useIsFocused } from '@react-navigation/native';
-;
+import { QuerySnapshot, collection, getDocs, onSnapshot } from "firebase/firestore";
+import { useIsFocused } from '@react-navigation/native';
+import { IconComponentProvider, Icon } from "@react-native-material/core";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { bag } from '../bag/Bag.js';
+import { bag_bd } from '../bag/Bag_bd.js';
 
 export const MainStore = ({ navigation }) => {
     const [categorias, setCategorias] = useState([]);
     const [productos, setProductos] = useState([]);
     const isFocused = useIsFocused();
-
+    // const { load_bag, add_to_bag, delete_from_bag, save_bag, get_total } = bag();
+    // const { add_to_bag } = bag_bd();
+    
     useEffect(() => {
         const obtenerDatos = async () => {
             try{
@@ -27,7 +33,7 @@ export const MainStore = ({ navigation }) => {
                     });
     
                     setCategorias(categoriasData);
-    
+                    
                     const productos_bd = onSnapshot(collection(db, 'Producto'), (querySnapshot) => {
                         const productosData = [];
 
@@ -47,6 +53,7 @@ export const MainStore = ({ navigation }) => {
         };
 
         obtenerDatos();
+        // load_bag();
     }, [isFocused]);
 
     const handleUpdateActivo = (id) => {
@@ -79,28 +86,32 @@ export const MainStore = ({ navigation }) => {
                 />
 
                 {categorias.find(item => item.id === '0' && item.activo) && (
-                    categorias.map((categoria) => (
-                        <ProductSlidderHorizontal key={categoria.id} slidderTitle={categoria.categoria} DATA={productos.filter(producto => producto.data.categoria == categoria.id)}></ProductSlidderHorizontal>
-                    ))
+                    categorias.map((categoria) => ( categoria.id !== '0' ? <ProductSlidderHorizontal key={categoria.id} slidderTitle={categoria.categoria} DATA={productos.filter(producto => producto.data.categoria == categoria.id)}></ProductSlidderHorizontal> : <></> ))
                 )}
+
+                { categorias.find(item => item.id === '0' && !item.activo) && (
+                    <ProductSlidderVertical slidderTitle={categorias.find(item => item.activo === true).categoria} DATA={productos.filter(producto => producto.data.categoria == categorias.find(item => item.activo === true).id)}></ProductSlidderVertical>
+                )} 
 
             </ScrollView>
 
-                { categorias.find(item => item.id === '0' && !item.activo) && (
-                    <>
-                        <ProductSlidderVertical slidderTitle={categorias.find(item => item.activo === true).categoria} DATA={productos.filter(producto => producto.data.categoria == categorias.find(item => item.activo === true).id)}></ProductSlidderVertical>
-                    </>
-                )} 
+
+            <TouchableOpacity style={styles.bagButton}  onPress={() => navigation.navigate('ProductBag') }>
+                <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                    <Icon name='shopping-outline' size={48} color='white'/>
+                </IconComponentProvider>
+            </TouchableOpacity>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        minHeight: '100%',
         flexGrow: 1,
         justifyContent: 'flex-start',
-        alignItems: 'center',
-        paddingBottom: 30
+        alignContent: 'center',
+        paddingBottom: 100
     },
     title: {
         width: '100%',
@@ -124,5 +135,21 @@ const styles = StyleSheet.create({
     },
     itemBlack: {
         backgroundColor: 'black'
+    },
+    bagButton: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 76,
+        height: 76,
+        borderRadius: 50,
+        bottom: 12,
+        right: 12,
+        backgroundColor: theme.colors.primary,
+        elevation: 5, // Para Android (añadir sombra)
+        shadowColor: 'black', // Para iOS (añadir sombra)
+        shadowOpacity: 0.5, // Para iOS (opacidad de la sombra)
+        shadowOffset: { width: 0, height: 2 }, // Para iOS (desplazamiento de la sombra)
+        shadowRadius: 4, // Para iOS (radio de la sombra)
     }
 });

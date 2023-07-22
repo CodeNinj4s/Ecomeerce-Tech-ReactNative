@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
 import { IconComponentProvider, Icon } from "@react-native-material/core";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import TouchableText from "../components/TextTouch";
 import { theme } from '../core/theme.js'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { bag_bd } from '../bag/Bag_bd.js';
 
 const PRODUCTS = [
     { id: '1', name: 'HP 24 fw with Audio Stereo 4K UHD', price: '2800', stock: '24'},
@@ -18,6 +19,7 @@ const PRODUCTS = [
 
 export const ProductBag = ({ navigation }) => {
     const [deleteOptionState, setShowDeleteOption] = useState({});
+    const { get_bag, bag_data } = bag_bd();
     
     const toggleDeleteOption = (itemId) => {
         setShowDeleteOption(prevState => ({
@@ -26,38 +28,49 @@ export const ProductBag = ({ navigation }) => {
         }));
     }
 
-    return (
-        <FlatList data={ PRODUCTS } ListHeaderComponent={<Text style={styles.title}>Mi bolsa</Text>} keyExtractor={item => item.id} numColumns={1} contentContainerStyle={styles.contentContainer}
-        renderItem={({ item }) => (
-            <View style={styles.cardProduct}>
-                { deleteOptionState[item.id] && (
-                    <View style={styles.deleteOption}>
-                        <Text>Eliminar de mi bolsa</Text>
+    console.log(bag_data);
+
+    return(
+        <>
+            {bag_data !== undefined ? (
+                <FlatList data={ bag_data.products } ListHeaderComponent={<Text style={styles.title}>Mi bolsa</Text>} keyExtractor={item => item.id} numColumns={1} contentContainerStyle={styles.contentContainer}
+                renderItem={({ item }) => (
+                    <View style={styles.cardProduct}>
+                        { deleteOptionState[item.id] && (
+                            <View style={styles.deleteOption}>
+                                <Text>Eliminar de mi bolsa</Text>
+                            </View>
+                        )}
+                        <Image source={{ uri: item.data.url_imagen }} style={styles.image}/>
+                        <View style={styles.info}>
+                            <View style={styles.nameOptions}>
+                                <Text numberOfLines={1} style={styles.productName}>{item.data.nombre}</Text>
+                                <TouchableOpacity onPress={() => toggleDeleteOption(item.id)}>
+                                    <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                                        <Icon name='dots-vertical' size={24} color='gray'/>
+                                    </IconComponentProvider>
+                                </TouchableOpacity>
+                            </View>
+                            <Text style={styles.productPrice}>{item.data.precio} MXN</Text>
+                        </View>
                     </View>
-                )}
-                <View style={styles.image}></View>
-                <View style={styles.info}>
-                    <View style={styles.nameOptions}>
-                        <Text numberOfLines={1} style={styles.productName}>{item.name}</Text>
-                        <TouchableOpacity onPress={() => toggleDeleteOption(item.id)}>
-                            <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-                                <Icon name='dots-vertical' size={24} color='gray'/>
-                            </IconComponentProvider>
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={styles.productPrice}>{item.price} MXN</Text>
+                )}/>
+            ) : (
+                <View style={styles.container}>
+                    <Text style={styles.title}>Mi bolsa</Text>
+                    <Image source={{ uri: 'https://static.vecteezy.com/system/resources/previews/009/417/126/original/ecommerce-icon-empty-shopping-cart-3d-illustration-free-png.png' }} style={styles.emptyCar}></Image>
+                    <Text style={styles.adviseText}>¡Su bola está vacía!</Text>
                 </View>
-            </View>
-        )}/>
+                
+            )}
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 30
     },
     title: {
         width: '100%',
@@ -114,5 +127,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5, // Para iOS (opacidad de la sombra)
         shadowOffset: { width: 0, height: 2 }, // Para iOS (desplazamiento de la sombra)
         shadowRadius: 4, // Para iOS (radio de la sombra)
+    },
+    emptyCar: {
+        marginTop: 120,
+        marginBottom: 20,
+        width: 240,
+        height: 240
+    },
+    adviseText: {
+        fontSize: 18
     }
 });
