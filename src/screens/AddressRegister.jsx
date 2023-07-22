@@ -22,13 +22,13 @@ export const AddressRegister = ({ navigation, route }) => {
     });
 
     const handleRegister = async () => {
-        try{
-            if(estado.trim() !== '' && ciudad.trim() !== '' && colonia.trim() !== '' && calle.trim() !== '' && numero.trim() !== '' && cp.trim() !== ''){
+        try {
+            if (estado.trim() !== '' && ciudad.trim() !== '' && colonia.trim() !== '' && calle.trim() !== '' && numero.trim() !== '' && cp.trim() !== '') {
                 const credentialas = await createUserWithEmailAndPassword(auth, correo, pass)
                 const user = credentialas.user
                 const id = user.uid
 
-                const envio = await addDoc(collection(db, "Envio"), {calle: calle, ciudad: ciudad, codigoPostal: cp, colonia: colonia, estado: estado, numero: numero});
+                const envio = await addDoc(collection(db, "Envio"), { calle: calle, ciudad: ciudad, codigoPostal: cp, colonia: colonia, estado: estado, numero: numero });
                 addDocumento("Usuario", { nombre: nombre, id: id, idEnvio: envio.id, tipo: 'cliente', password: pass })
 
                 navigation.navigate('MainStore');
