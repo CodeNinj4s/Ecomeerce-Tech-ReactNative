@@ -11,6 +11,9 @@ const useCurrentLocation = () => {
     });
 
     useEffect(() => {
+        let isMounted = true;
+        let updateInterval;
+
         const getLocation = async () => {
             try {
                 const { status } = await Location.requestForegroundPermissionsAsync();
@@ -20,26 +23,40 @@ const useCurrentLocation = () => {
                     return;
                 }
 
-                const location = await Location.getCurrentPositionAsync({});
-                const { latitude, longitude } = location.coords;
+                const updateLocation = async () => {
+                    const location = await Location.getCurrentPositionAsync({});
+                    const { latitude, longitude } = location.coords;
 
-                // Geocodificación inversa para obtener el nombre de la calle
-                const reverseGeocode = await Location.reverseGeocodeAsync({ latitude, longitude });
-                const streetName = reverseGeocode.length > 0 ? reverseGeocode[0].street : '';
+                    // Geocodificación inversa para obtener el nombre de la calle
+                    const reverseGeocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+                    const streetName = reverseGeocode.length > 0 ? reverseGeocode[0].street : '';
 
-                setCurrentLocationData({
-                    streetName,
-                    gps: {
-                        latitude,
-                        longitude,
-                    },
-                });
+                    if (isMounted) {
+                        setCurrentLocationData({
+                            streetName,
+                            gps: {
+                                latitude,
+                                longitude,
+                            },
+                        });
+                    }
+                };
+
+                // Actualiza la ubicación inicial
+                await updateLocation();
+
+                updateInterval = setInterval(updateLocation, 5000);
             } catch (error) {
                 console.log('Error al obtener la ubicación:', error);
             }
         };
 
         getLocation();
+
+        return () => {
+            isMounted = false;
+            clearInterval(updateInterval);
+        };
     }, []);
 
     return currentLocationData;
