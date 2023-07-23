@@ -1,24 +1,21 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { IconComponentProvider, Icon } from "@react-native-material/core";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import TouchableText from "../components/TextTouch";
-import { theme } from '../core/theme.js'
-import { useState } from 'react';
-
-const PRODUCTS = [
-    { id: '1', name: 'HP 24 fw with Audio Stereo 4K UHD', price: '2800', stock: '24' },
-    { id: '2', name: 'LG 20 pl with Audio', price: '2400', stock: '14' },
-    { id: '3', name: 'Samsung OLED 21 pl', price: '3400', stock: '28' },
-    { id: '4', name: 'Sony 32 pl 4K', price: '4800', stock: '10' },
-    { id: '5', name: 'HP 24 fw with Audio Stereo', price: '2800', stock: '24' },
-    { id: '6', name: 'LG 20 pl with Audio', price: '2400', stock: '14' },
-    { id: '7', name: 'Samsung OLED 21 pl', price: '3400', stock: '28' },
-    { id: '8', name: 'Sony 32 pl 4K', price: '4800', stock: '10' }
-];
+import { useEffect, useState } from 'react';
+import { bag_bd } from '../bag/Bag_bd.js';
+import { auth, db } from '../../database/firebase';
+import {  getDoc, doc, onSnapshot } from "firebase/firestore";
+import { theme } from '../core/theme.js';
+import { useIsFocused } from '@react-navigation/native';
 
 export const ProductBag = ({ navigation }) => {
     const [deleteOptionState, setShowDeleteOption] = useState({});
-
+    const { get_bag, dele_from_bag, bag_data } = bag_bd();
+    const [loading, set_loading] = useState(true);
+    const [bag_array, set_bag_array ] = useState([]);
+    const isFocused = useIsFocused();
+    let total = 0;
+    
     const toggleDeleteOption = (itemId) => {
         setShowDeleteOption(prevState => ({
             ...prevState,
@@ -26,38 +23,96 @@ export const ProductBag = ({ navigation }) => {
         }));
     }
 
-    return (
-        <FlatList data={PRODUCTS} ListHeaderComponent={<Text style={styles.title}>Mi bolsa</Text>} keyExtractor={item => item.id} numColumns={1} contentContainerStyle={styles.contentContainer}
-            renderItem={({ item }) => (
-                <View style={styles.cardProduct}>
-                    {deleteOptionState[item.id] && (
-                        <View style={styles.deleteOption}>
-                            <Text>Eliminar de mi bolsa</Text>
+    const get_total = () => {
+        bag_array.forEach((p) => {
+            total += Number(p.precio);
+        })
+
+        return total;
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try{
+                if(isFocused){
+                    const update_data = onSnapshot(doc(db, 'Bolsa', auth.currentUser.uid), (querySnapshot) => {
+                        const bag = (querySnapshot.data());
+    
+                        set_bag_array(bag.products ? Object.values(bag.products) : []);
+                        set_loading(false);
+                    });
+
+                    return () => update_data();
+                    // const data = await getDoc(doc(db, 'Bolsa', auth.currentUser.uid));
+                    // const bag = (data.data());
+    
+                    // set_bag_array(bag.products ? Object.values(bag.products) : []);
+                    // set_loading(false);
+                }
+            } catch(e){
+                console.log('Error al cargar la bolsa: ' + e);
+                set_loading(false);
+            }
+        }
+
+        fetchData();
+    }, [isFocused]);
+
+    if (loading) {
+        return <ActivityIndicator size="large" color="blue" style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}/>;
+    }
+
+    return(
+        <>
+            {bag_data !== undefined && bag_array.length !== 0 ? (
+                <>
+                    <FlatList data={ bag_array } ListHeaderComponent={<Text style={styles.title}>Mi bolsa</Text>} keyExtractor={item => item.id} numColumns={1} contentContainerStyle={styles.contentContainer}
+                    renderItem={({ item }) => (
+                        <View style={styles.cardProduct}>
+                            { deleteOptionState[item.id] && (
+                                <TouchableOpacity onPress={() => dele_from_bag(item)} style={styles.deleteOption}>
+                                    <Text>Eliminar de mi bolsa</Text>
+                                </TouchableOpacity>
+                            )}
+                            <Image source={{ uri: item.url_imagen }} style={styles.image}/>
+                            <View style={styles.info}>
+                                <View style={styles.nameOptions}>
+                                    <Text numberOfLines={1} style={styles.productName}>{item.nombre}</Text>
+                                    <TouchableOpacity onPress={() => toggleDeleteOption(item.id)}>
+                                        <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                                            <Icon name='dots-vertical' size={24} color='gray'/>
+                                        </IconComponentProvider>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={styles.productPrice}>{item.precio} MXN</Text>
+                            </View>
                         </View>
-                    )}
-                    <View style={styles.image}></View>
-                    <View style={styles.info}>
-                        <View style={styles.nameOptions}>
-                            <Text numberOfLines={1} style={styles.productName}>{item.name}</Text>
-                            <TouchableOpacity onPress={() => toggleDeleteOption(item.id)}>
-                                <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-                                    <Icon name='dots-vertical' size={24} color='gray' />
-                                </IconComponentProvider>
-                            </TouchableOpacity>
+                    )}/>
+                    <View style={styles.totalContainer}>
+                        <View style={styles.total}>
+                            <Text style={styles.textComprar}>Total: ${get_total()} MXN</Text>
                         </View>
-                        <Text style={styles.productPrice}>{item.price} MXN</Text>
+                        <TouchableOpacity onPress={() => console.log(total)} style={styles.btnComprar}>
+                            <Text style={[styles.textComprar, styles.textWhite]}>Comprar</Text>
+                        </TouchableOpacity>
                     </View>
+                </>
+            ) : (
+                <View style={styles.container}>
+                    <Text style={styles.title}>Mi bolsa</Text>
+                    <Image source={{ uri: 'https://static.vecteezy.com/system/resources/previews/009/417/126/original/ecommerce-icon-empty-shopping-cart-3d-illustration-free-png.png' }} style={styles.emptyCar}></Image>
+                    <Text style={styles.adviseText}>¡Su bola está vacía!</Text>
                 </View>
-            )} />
+                
+            )}
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 30
     },
     title: {
         width: '100%',
@@ -114,5 +169,52 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5, // Para iOS (opacidad de la sombra)
         shadowOffset: { width: 0, height: 2 }, // Para iOS (desplazamiento de la sombra)
         shadowRadius: 4, // Para iOS (radio de la sombra)
+    },
+    emptyCar: {
+        marginTop: 120,
+        marginBottom: 20,
+        width: 240,
+        height: 240
+    },
+    adviseText: {
+        fontSize: 18
+    },
+    totalContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        position: 'absolute',
+        width: '100%',
+        paddingHorizontal: 20,
+        bottom: 24
+    },
+    total: {
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        marginRight: 10,
+        borderRadius: 50,
+        backgroundColor: 'white',
+        elevation: 5, // Para Android (añadir sombra)
+        shadowColor: 'black', // Para iOS (añadir sombra)
+        shadowOpacity: 0.5, // Para iOS (opacidad de la sombra)
+        shadowOffset: { width: 0, height: 2 }, // Para iOS (desplazamiento de la sombra)
+        shadowRadius: 4, // Para iOS (radio de la sombra)
+    },
+    btnComprar: {
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 50,
+        backgroundColor: theme.colors.primary,
+        elevation: 5, // Para Android (añadir sombra)
+        shadowColor: 'black', // Para iOS (añadir sombra)
+        shadowOpacity: 0.5, // Para iOS (opacidad de la sombra)
+        shadowOffset: { width: 0, height: 2 }, // Para iOS (desplazamiento de la sombra)
+        shadowRadius: 4, // Para iOS (radio de la sombra)
+    },
+    textComprar: {
+        fontSize: 18,
+    },
+    textWhite: {
+        fontWeight: 600,
+        color: 'white'
     }
 });

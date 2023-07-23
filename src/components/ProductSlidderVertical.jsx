@@ -1,27 +1,34 @@
 import React from 'react'
-import {StyleSheet, Text, View, FlatList, Image} from 'react-native';
+import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity} from 'react-native';
+import { IconComponentProvider, Icon } from "@react-native-material/core";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { theme } from '../core/theme.js'
+import { bag_bd } from '../bag/Bag_bd.js';
 
 export const ProductSlidderVertical = ({ slidderTitle, DATA }) => {
+    const { add_to_bag } = bag_bd();
+
     return (
-        <>
-            <FlatList data={ DATA } ListHeaderComponent={<Text style={styles.categorieTitle}>{slidderTitle}</Text>} keyExtractor={item => item.id} numColumns={2} contentContainerStyle={styles.contentContainer}
-            renderItem={({ item }) => (
-                <View style={styles.cardProduct}>
-                    <Image source={{ uri: item.data.url_imagen }} style={styles.image}/>
-                    <Text numberOfLines={1} style={styles.productName}>{item.data.nombre}</Text>
-                    <Text>{item.data.precio} MXN</Text>
+        <FlatList data={ DATA } ListHeaderComponent={<Text style={styles.categorieTitle}>{slidderTitle}</Text>} keyExtractor={item => item.id} numColumns={2} contentContainerStyle={styles.contentContainer}
+        renderItem={({ item }) => (
+            <View style={styles.cardProduct}>
+                <Image source={{ uri: item.data.url_imagen }} style={styles.image}/>
+                <Text numberOfLines={1} style={styles.productName}>{item.data.nombre}</Text>
+                <Text>{item.data.precio} MXN</Text>
+                <View style={styles.stockAddView}>
                     <Text>Stock: {item.data.cantidad}</Text>
+                    <TouchableOpacity onPress={() => add_to_bag(item)}> 
+                        <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                            <Icon name='plus-circle' size={24} color={theme.colors.primary}/>
+                        </IconComponentProvider>
+                    </TouchableOpacity>
                 </View>
-            )}/>
-        </>
+            </View>
+        )}/>
     )
 }
 
 const styles = StyleSheet.create({
-    categorieView: {
-        width: '100%',
-        marginTop: 20
-    },
     categorieTitle: {
         width: '100%',
         fontSize: 32,
@@ -48,7 +55,12 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap'
     },
     contentContainer: {
+        padding: 6,
         flexDirection: 'column',
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+    },
+    stockAddView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 });

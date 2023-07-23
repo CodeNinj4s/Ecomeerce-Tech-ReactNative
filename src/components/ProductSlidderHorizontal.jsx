@@ -1,7 +1,13 @@
-import React from 'react'
-import {StyleSheet, Text, View, FlatList, Image} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity} from 'react-native';
+import { IconComponentProvider, Icon } from "@react-native-material/core";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { theme } from '../core/theme.js';
+import { bag_bd } from '../bag/Bag_bd.js';
 
 export const ProductSlidderHorizontal = ({ slidderTitle, DATA }) => {
+    const { add_to_bag } = bag_bd();
+
     return (
         <View style={styles.categorieView}>
             <Text style={styles.categorieTitle}>{slidderTitle}</Text>
@@ -11,7 +17,14 @@ export const ProductSlidderHorizontal = ({ slidderTitle, DATA }) => {
                     <Image source={{ uri: item.data.url_imagen }} style={styles.image}/>
                     <Text numberOfLines={1} style={styles.productName}>{item.data.nombre}</Text>
                     <Text>{item.data.precio} MXN</Text>
-                    <Text>Stock: {item.data.cantidad}</Text>
+                    <View style={styles.stockAddView}>
+                        <Text>Stock: {item.data.cantidad}</Text>
+                        <TouchableOpacity onPress={() => add_to_bag(item)}>
+                            <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                                <Icon name='plus-circle' size={24} color={theme.colors.primary}/>
+                            </IconComponentProvider>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             )}/>
         </View>
@@ -45,5 +58,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 600,
         flexWrap: 'nowrap'
+    },
+    stockAddView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 });
