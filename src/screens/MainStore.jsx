@@ -5,19 +5,15 @@ import TouchableText from "../components/TextTouch";
 import { theme } from '../core/theme.js'
 import { useEffect, useState } from 'react';
 import { db } from '../../database/firebase';
-import { QuerySnapshot, collection, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { useIsFocused } from '@react-navigation/native';
 import { IconComponentProvider, Icon } from "@react-native-material/core";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { bag } from '../bag/Bag.js';
-import { bag_bd } from '../bag/Bag_bd.js';
 
 export const MainStore = ({ navigation }) => {
     const [categorias, setCategorias] = useState([]);
     const [productos, setProductos] = useState([]);
     const isFocused = useIsFocused();
-    // const { load_bag, add_to_bag, delete_from_bag, save_bag, get_total } = bag();
-    // const { add_to_bag } = bag_bd();
     
     useEffect(() => {
         const obtenerDatos = async () => {
@@ -38,7 +34,6 @@ export const MainStore = ({ navigation }) => {
                         const productosData = [];
 
                         querySnapshot.forEach((prod) => {
-                            // console.log(prod.data().categoria._key.path.segments[6]);
                             productosData.push( { id: prod.id, data: prod.data() } );
                         });
 
@@ -53,7 +48,6 @@ export const MainStore = ({ navigation }) => {
         };
 
         obtenerDatos();
-        // load_bag();
     }, [isFocused]);
 
     const handleUpdateActivo = (id) => {

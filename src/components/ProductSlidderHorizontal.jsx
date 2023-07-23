@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity} from 'react-native';
 import { IconComponentProvider, Icon } from "@react-native-material/core";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { theme } from '../core/theme.js';
-import { bag } from '../bag/Bag.js';
 import { bag_bd } from '../bag/Bag_bd.js';
 
 export const ProductSlidderHorizontal = ({ slidderTitle, DATA }) => {
-    // const { load_bag, add_to_bag, delete_from_bag, save_bag, get_total } = bag();
     const { add_to_bag } = bag_bd();
 
     return (

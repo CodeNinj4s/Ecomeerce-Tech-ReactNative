@@ -3,8 +3,11 @@ import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity} from 'react-n
 import { IconComponentProvider, Icon } from "@react-native-material/core";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { theme } from '../core/theme.js'
+import { bag_bd } from '../bag/Bag_bd.js';
 
 export const ProductSlidderVertical = ({ slidderTitle, DATA }) => {
+    const { add_to_bag } = bag_bd();
+
     return (
         <FlatList data={ DATA } ListHeaderComponent={<Text style={styles.categorieTitle}>{slidderTitle}</Text>} keyExtractor={item => item.id} numColumns={2} contentContainerStyle={styles.contentContainer}
         renderItem={({ item }) => (
@@ -14,7 +17,7 @@ export const ProductSlidderVertical = ({ slidderTitle, DATA }) => {
                 <Text>{item.data.precio} MXN</Text>
                 <View style={styles.stockAddView}>
                     <Text>Stock: {item.data.cantidad}</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => add_to_bag(item)}> 
                         <IconComponentProvider IconComponent={MaterialCommunityIcons}>
                             <Icon name='plus-circle' size={24} color={theme.colors.primary}/>
                         </IconComponentProvider>
