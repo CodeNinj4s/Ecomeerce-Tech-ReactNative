@@ -19,7 +19,7 @@ export const ProductBag = ({ navigation }) => {
     const toggleDeleteOption = (itemId) => {
         setShowDeleteOption(prevState => ({
             ...prevState,
-            [itemId]: !prevState[itemId]            
+            [itemId]: !prevState[itemId]
         }));
     }
 

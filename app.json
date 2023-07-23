@@ -3,6 +3,9 @@
     "name": "Ecomeerce-ReactNative-App",
     "slug": "Ecomeerce-ReactNative-App",
     "version": "1.0.0",
+    "permissions": [
+      "expo-location"
+    ],
     "orientation": "portrait",
     "icon": "",
     "userInterfaceStyle": "light",

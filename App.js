@@ -7,6 +7,8 @@ import { Register } from "./src/screens/Register";
 import { AddressRegister } from "./src/screens/AddressRegister";
 import { ForgetPassword } from "./src/screens/ForgetPassword";
 import { MainStore } from "./src/screens/MainStore";
+import { OrderDelivery } from "./src/screens/Map/OrderDelivery";
+
 import { ProductBag } from "./src/screens/ProductBag";
 
 
@@ -21,6 +23,7 @@ export default function App() {
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Tracker" component={OrderDelivery} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="AddressRegister" component={AddressRegister} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />

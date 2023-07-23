@@ -22,8 +22,8 @@ export const AddressRegister = ({ navigation, route }) => {
     });
 
     const handleRegister = async () => {
-        try{
-            if(estado.trim() !== '' && ciudad.trim() !== '' && colonia.trim() !== '' && calle.trim() !== '' && numero.trim() !== '' && cp.trim() !== ''){
+        try {
+            if (estado.trim() !== '' && ciudad.trim() !== '' && colonia.trim() !== '' && calle.trim() !== '' && numero.trim() !== '' && cp.trim() !== '') {
                 const credentialas = await createUserWithEmailAndPassword(auth, correo, pass)
                 const user = credentialas.user
                 const user_id = user.uid;
