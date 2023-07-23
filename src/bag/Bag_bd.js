@@ -18,20 +18,22 @@ export const bag_bd = () => {
                 await setDoc(ref, { products: {
                     [producto.id]: {
                         id: producto.id,
-                        cantidad: producto.data.cantidad,
+                        cantidad: 1,
                         precio: producto.data.precio,
                         nombre: producto.data.nombre,
-                        url_imagen: producto.data.url_imagen
+                        url_imagen: producto.data.url_imagen,
+                        subtotal: Number(producto.data.precio)
                     }
                 } });
             } else{
                 await updateDoc(ref, { 
                     [`products.${producto.id}`]: {
                         id: producto.id,
-                        cantidad: producto.data.cantidad,
+                        cantidad: 1,
                         precio: producto.data.precio,
                         nombre: producto.data.nombre,
-                        url_imagen: producto.data.url_imagen
+                        url_imagen: producto.data.url_imagen,
+                        subtotal: Number(producto.data.precio)
                     }
                 });
             }
@@ -47,6 +49,26 @@ export const bag_bd = () => {
             return data;
         } catch(e){
             console.log('Error al obtener el carrito: ' + e);
+        }
+    }
+
+    const update_product_amount = async (producto, cantidad) => {
+        try{
+            const ref = doc(db, 'Bolsa', auth.currentUser.uid);
+            const document = await getDoc(ref);
+
+            await updateDoc(ref, { 
+                [`products.${producto.id}`]: {
+                    id: producto.id,
+                    cantidad: Number(cantidad),
+                    precio: producto.precio,
+                    nombre: producto.nombre,
+                    url_imagen: producto.url_imagen,
+                    subtotal: Number(producto.precio) * Number(cantidad)
+                }
+            });
+        } catch(e){
+            console.log('Error al acutalizar la cantidad de productos: ' + e);
         }
     }
 
@@ -70,6 +92,7 @@ export const bag_bd = () => {
         bag_bd,
         add_to_bag,
         get_bag,
+        update_product_amount,
         dele_from_bag
     };
 }
