@@ -10,7 +10,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 export const ProductBag = ({ navigation }) => {
     const [deleteOptionState, setShowDeleteOption] = useState({});
-    const { get_bag, dele_from_bag, bag_data } = bag_bd();
+    const { get_bag, update_product_amount, dele_from_bag, bag_data } = bag_bd();
     const [loading, set_loading] = useState(true);
     const [bag_array, set_bag_array ] = useState([]);
     const isFocused = useIsFocused();
@@ -25,10 +25,22 @@ export const ProductBag = ({ navigation }) => {
 
     const get_total = () => {
         bag_array.forEach((p) => {
-            total += Number(p.precio);
+            total += Number(p.subtotal);
         })
 
         return total;
+    }
+
+    const aument = (item, cantidad) => {
+        if(cantidad < 20){
+            update_product_amount(item, cantidad + 1);
+        }
+    }
+
+    const decrease = (item, cantidad) => {
+        if(cantidad > 1){
+            update_product_amount(item, cantidad - 1);
+        }
     }
 
     useEffect(() => {
@@ -43,11 +55,6 @@ export const ProductBag = ({ navigation }) => {
                     });
 
                     return () => update_data();
-                    // const data = await getDoc(doc(db, 'Bolsa', auth.currentUser.uid));
-                    // const bag = (data.data());
-    
-                    // set_bag_array(bag.products ? Object.values(bag.products) : []);
-                    // set_loading(false);
                 }
             } catch(e){
                 console.log('Error al cargar la bolsa: ' + e);
@@ -84,7 +91,20 @@ export const ProductBag = ({ navigation }) => {
                                         </IconComponentProvider>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={styles.productPrice}>{item.precio} MXN</Text>
+                                <View style={styles.amountView}>
+                                    <TouchableOpacity onPress={() => decrease(item, item.cantidad)}> 
+                                        <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                                            <Icon name='minus-circle' size={24} color={theme.colors.primary}/>
+                                        </IconComponentProvider>
+                                    </TouchableOpacity>
+                                    <Text style={styles.amountText}>{item.cantidad}</Text>
+                                    <TouchableOpacity onPress={() => aument(item, item.cantidad)}> 
+                                        <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                                            <Icon name='plus-circle' size={24} color={theme.colors.primary}/>
+                                        </IconComponentProvider>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={styles.productPrice}>Subtotal: ${item.subtotal} MXN</Text>
                             </View>
                         </View>
                     )}/>
@@ -101,7 +121,7 @@ export const ProductBag = ({ navigation }) => {
                 <View style={styles.container}>
                     <Text style={styles.title}>Mi bolsa</Text>
                     <Image source={{ uri: 'https://static.vecteezy.com/system/resources/previews/009/417/126/original/ecommerce-icon-empty-shopping-cart-3d-illustration-free-png.png' }} style={styles.emptyCar}></Image>
-                    <Text style={styles.adviseText}>¡Su bola está vacía!</Text>
+                    <Text style={styles.adviseText}>¡Su bolsa está vacía!</Text>
                 </View>
                 
             )}
@@ -112,7 +132,10 @@ export const ProductBag = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
+    },
+    contentContainer: {
+        paddingBottom: 80
     },
     title: {
         width: '100%',
@@ -123,7 +146,7 @@ const styles = StyleSheet.create({
     },
     cardProduct: {
         flexDirection: 'row',
-        marginVertical: 10,
+        marginVertical: 6,
         marginHorizontal: 20,
         borderRadius: 8,
         backgroundColor: 'white'
@@ -150,10 +173,23 @@ const styles = StyleSheet.create({
         fontWeight: 600,
         flexWrap: 'nowrap'
     },
+    amountView:{
+        marginTop: 6,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: 90
+    },
+    amountText: {
+        paddingHorizontal: 10,
+        borderRadius: 4,
+        textAlignVertical: 'center',
+        backgroundColor: theme.colors.background 
+    }, 
     productPrice: {
         textAlign: 'right',
         width: 200,
-        marginTop: 40
+        marginTop: 20
     },
     deleteOption: {
         position: 'absolute',
