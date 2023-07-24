@@ -112,7 +112,7 @@ export const ProductBag = ({ navigation }) => {
                         <View style={styles.total}>
                             <Text style={styles.textComprar}>Total: ${get_total()} MXN</Text>
                         </View>
-                        <TouchableOpacity onPress={() => console.log(total)} style={styles.btnComprar}>
+                        <TouchableOpacity style={styles.btnComprar} onPress={() => navigation.navigate('Order', {total, bag_data}) }>
                             <Text style={[styles.textComprar, styles.textWhite]}>Comprar</Text>
                         </TouchableOpacity>
                     </View>

@@ -11,8 +11,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export const Login = ({ navigation }) => {
     const { onInputChange, correo, contraseña } = useForm({
-        correo: 'alfredgarcia14200@gmail.com',
-        contraseña: 'aciga200',
+        correo: 'njr01397@gmail.com',
+        contraseña: '12345678',
     });
 
     const handleLogin = async () => {
