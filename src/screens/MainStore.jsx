@@ -90,6 +90,11 @@ export const MainStore = ({ navigation }) => {
             </ScrollView>
 
 
+            <TouchableOpacity style={styles.orderButton}>
+                <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+                    <Icon name='truck-fast' size={48} color='white'/>
+                </IconComponentProvider>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.bagButton}  onPress={() => navigation.navigate('ProductBag') }>
                 <IconComponentProvider IconComponent={MaterialCommunityIcons}>
                     <Icon name='shopping-outline' size={48} color='white'/>
@@ -138,6 +143,22 @@ const styles = StyleSheet.create({
         height: 76,
         borderRadius: 50,
         bottom: 12,
+        right: 12,
+        backgroundColor: theme.colors.primary,
+        elevation: 5, // Para Android (añadir sombra)
+        shadowColor: 'black', // Para iOS (añadir sombra)
+        shadowOpacity: 0.5, // Para iOS (opacidad de la sombra)
+        shadowOffset: { width: 0, height: 2 }, // Para iOS (desplazamiento de la sombra)
+        shadowRadius: 4, // Para iOS (radio de la sombra)
+    },
+    orderButton: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 76,
+        height: 76,
+        borderRadius: 50,
+        bottom: 100,
         right: 12,
         backgroundColor: theme.colors.primary,
         elevation: 5, // Para Android (añadir sombra)
