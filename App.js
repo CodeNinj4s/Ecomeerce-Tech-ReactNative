@@ -12,7 +12,6 @@ import { Order } from "./src/screens/Order";
 import { ProductBag } from "./src/screens/ProductBag";
 import { theme } from "./src/core/theme";
 
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
