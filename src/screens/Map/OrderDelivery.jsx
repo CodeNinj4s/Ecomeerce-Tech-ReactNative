@@ -8,12 +8,16 @@ import GOOGLE_API_KEY from '../../helpers/maps'
 import icons from '../../../assets/icons/icons,'
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../../../database/firebase";
+import { useRoute } from '@react-navigation/native';
+
 import {
     Image, Text, View, TouchableOpacity
 } from 'react-native';
 import { Linking } from 'react-native';
 
 export const OrderDelivery = ({ navigation }) => {
+    const route = useRoute();
+    const { coordenadas, numero } = route.params;
     const mapView = useRef()
     const [streetName, setStreetName] = useState("")
     const [fromLocation, setFromLocation] = useState(null)
@@ -35,8 +39,8 @@ export const OrderDelivery = ({ navigation }) => {
     // };
 
     const destinationLocationData = {
-        latitude: 17.056969,
-        longitude: -96.730048,
+        latitude: coordenadas.latitude,
+        longitude: coordenadas.longitude,
     };
 
 
@@ -282,9 +286,7 @@ export const OrderDelivery = ({ navigation }) => {
 
 
     function handleCallButtonPress() {
-        const phoneNumber = '1234567890'; // Coloca aquí el número de teléfono de la tienda de entrega
-
-        // Reemplaza 'tel:' con 'telprompt:' si deseas mostrar un cuadro de diálogo de confirmación antes de realizar la llamada.
+        const phoneNumber = numero;
         Linking.openURL(`tel:${phoneNumber}`);
     }
 
