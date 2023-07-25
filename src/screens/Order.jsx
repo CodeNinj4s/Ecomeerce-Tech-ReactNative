@@ -13,14 +13,14 @@ export const Order = ({ navigation, route }) => {
     const [coords, setCoords] = useState(null);
     const [address, setAddress] = useState();
     const [region, setRegion] = useState();
+    const numero = "951 50 81335"
 
-
-    // const onPreesable = () => {
-    //     navigation.navigate('Tracker', {
-    //         coordenadas: coords,
-    //         numero: "951 508 1335"
-    //     })
-    // }
+    const onPreesable = () => {
+        navigation.navigate('Tracker', {
+            coordenadas: coords,
+            numero: numero
+        })
+    }
 
     const handleMapPress = async (event) => {
         const { latitude, longitude } = event.nativeEvent.coordinate;

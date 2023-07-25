@@ -6,24 +6,20 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions'
 import GOOGLE_API_KEY from '../../helpers/maps'
 import icons from '../../../assets/icons/icons,'
-import { updateDoc, doc } from "firebase/firestore";
-import { db } from "../../../database/firebase";
-import { useRoute } from '@react-navigation/native';
+
 
 import {
-    Image, Text, View, TouchableOpacity
+    Image, Text, View, TouchableOpacity, Linking
 } from 'react-native';
-import { Linking } from 'react-native';
 
-export const OrderDelivery = ({ navigation }) => {
-    const route = useRoute();
+export const OrderDelivery = ({ navigation, route }) => {
+    // const route = useRoute();
     const { coordenadas, numero } = route.params;
     const mapView = useRef()
     const [streetName, setStreetName] = useState("")
     const [fromLocation, setFromLocation] = useState(null)
     const [toLocation, setToLocation] = useState(null)
     const [region, setRegion] = useState(null)
-
     const [duration, setDuration] = useState(0)
     const [isReady, setIsReady] = useState(false)
     const [angle, setAngle] = useState(0)
@@ -285,10 +281,28 @@ export const OrderDelivery = ({ navigation }) => {
     }
 
 
-    function handleCallButtonPress() {
-        const phoneNumber = numero;
-        Linking.openURL(`tel:${phoneNumber}`);
-    }
+
+
+    const formatPhoneNumber = (phoneNumber) => {
+        // Remove all non-numeric characters from the phone number
+        return phoneNumber.replace(/\D/g, '');
+    };
+
+    const handleCallButtonPress = async () => {
+        if (numero) {
+            const formattedNumber = formatPhoneNumber(numero);
+            const phoneNumberUrl = `tel:${formattedNumber}`;
+            try {
+                await Linking.openURL(phoneNumberUrl);
+            } catch (error) {
+                console.warn('Error occurred while opening the URL:', error.message);
+                // You can handle the error here as needed, such as showing a user-friendly error message.
+            }
+        } else {
+            console.warn('El número de teléfono está vacío o no es válido.');
+        }
+    };
+
 
     function renderDestinationHeader() {
         return (

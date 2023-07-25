@@ -31,6 +31,7 @@ export default function App() {
         <Stack.Screen name="MainStore" component={MainStore} />
         <Stack.Screen name="ProductBag" component={ProductBag} />
         <Stack.Screen name="ClienteTracker" component={ClienteTracker} />
+        <Stack.Screen name="Order" component={Order} />
 
       </Stack.Navigator>
     </NavigationContainer>
