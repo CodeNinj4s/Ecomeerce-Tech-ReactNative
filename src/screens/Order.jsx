@@ -1,39 +1,67 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
-import { IconComponentProvider, Icon } from "@react-native-material/core";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useEffect, useState } from 'react';
-import { bag_bd } from '../bag/Bag_bd.js';
+import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
 import { auth, db } from '../../database/firebase';
-import {  getDoc, doc, onSnapshot } from "firebase/firestore";
+import {  getDoc, doc } from "firebase/firestore";
 import { theme } from '../core/theme.js';
-import { useIsFocused } from '@react-navigation/native';
-import useCurrentLocation from '../hooks/useCurrentLocation'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
 import GOOGLE_API_KEY from '../helpers/maps';
 import Geocoder from 'react-native-geocoding';
 
 export const Order = ({ navigation, route}) => {
+    const mapView = useRef();
     const { total, bag_data } = route.params;
     const [coords, setCoords] = useState(null);
     const [address, setAddress] = useState();
+    const [region, setRegion] = useState();
+
+    const handleMapPress = async (event) => {
+        const { latitude, longitude } = event.nativeEvent.coordinate;
+        const response = await Geocoder.from(latitude, longitude);
+        const address = response.results[0].formatted_address;
+
+        setCoords({ latitude: latitude, longitude: longitude });
+        setRegion({ latitude: latitude, longitude: longitude, latitudeDelta: region.latitudeDelta, longitudeDelta: region.longitudeDelta });
+        setAddress(address);
+    }
+
+    const zoomIn = () => {
+        let newRegion = {
+            latitude: region.latitude,
+            longitude: region.longitude,
+            latitudeDelta: region.latitudeDelta / 2,
+            longitudeDelta: region.longitudeDelta / 2
+        }
+
+        setRegion(newRegion)
+        mapView.current.animateToRegion(newRegion, 200)
+    }
+
+    const zoomOut = () => {
+        let newRegion = {
+            latitude: region.latitude,
+            longitude: region.longitude,
+            latitudeDelta: region.latitudeDelta * 2,
+            longitudeDelta: region.longitudeDelta * 2
+        }
+
+        setRegion(newRegion)
+        mapView.current.animateToRegion(newRegion, 200)
+    }
 
     useEffect(() => {
         const fetchData = async () => {
             try{
                 const idEnvio = (await getDoc(doc(db, 'Usuario', auth.currentUser.uid))).data().idEnvio;
                 const envio = (await getDoc(doc(db, 'Envio', idEnvio))).data();
-                const address = `${envio.calle}, ${envio.colonia}, ${envio.ciudad}`;
+                const address = `${envio.calle} ${envio.numero}, ${envio.colonia}, ${envio.codigoPostal} ${envio.ciudad}, ${envio.estado}`;
                 setAddress(address);
-                console.log(address);
+
                 Geocoder.init(GOOGLE_API_KEY);
 
-                Geocoder.from(address).then(
-                    response => {
-                        const { lat, lng } = response.results[0].geometry.location;
-                        setCoords({ latitude: lat, longitude: lng});
-                    }
-                ).catch(e => console.log('Error en la localización: ' + e));
+                const response = await Geocoder.from(address)
+                const { lat, lng } = response.results[0].geometry.location;
+                setCoords({ latitude: lat, longitude: lng});
+                setRegion({latitude: lat, longitude: lng, latitudeDelta: 0.01, longitudeDelta: 0.01});
             } catch(e){
                 console.log('Error al obtener la dirección: ' + e);
             }
@@ -42,18 +70,23 @@ export const Order = ({ navigation, route}) => {
         fetchData();
     }, []);
 
-    // console.log(total);
-    // console.log(bag_data);
-
     return(
         <View style={{flex: 1}}>
             {coords ? (
-                <MapView style={{flex: 1}} initialRegion={{latitude: coords.latitude, longitude: coords.longitude, latitudeDelta: 0.01, longitudeDelta: 0.01}}>
+                <MapView ref={mapView} style={{flex: 1}} initialRegion={region} onPress={handleMapPress}>
                     <Marker coordinate={coords}/>
                 </MapView>
             ) : (
                 <Text>Cargando...</Text>
             )}
+
+            <TouchableOpacity style={[styles.zoomButtons, {right: 20, bottom: 280}]} onPress={() => zoomIn()}>
+                <Text style={{fontSize: 18}}>+</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.zoomButtons, {right: 20, bottom: 210}]} onPress={() => zoomOut()}>
+                <Text style={{fontSize: 18}}>-</Text>
+            </TouchableOpacity>
+
             <View style={styles.directionView}>
                 <View style={styles.directionCard}>
                     <Text style={{fontWeight: 500, fontSize: 18}}>Dirección:</Text>
@@ -68,6 +101,15 @@ export const Order = ({ navigation, route}) => {
 }
 
 const styles = StyleSheet.create({
+    zoomButtons: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        width: 60,
+        height: 60,
+        borderRadius: 50,
+        backgroundColor: 'white'
+    },  
     directionView: {
         position: 'absolute',
         width: '100%',
