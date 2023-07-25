@@ -1,18 +1,26 @@
 import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { auth, db } from '../../database/firebase';
-import {  getDoc, doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { theme } from '../core/theme.js';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import GOOGLE_API_KEY from '../helpers/maps';
 import Geocoder from 'react-native-geocoding';
 
-export const Order = ({ navigation, route}) => {
+export const Order = ({ navigation, route }) => {
     const mapView = useRef();
     const { total, bag_data } = route.params;
     const [coords, setCoords] = useState(null);
     const [address, setAddress] = useState();
     const [region, setRegion] = useState();
+    const numero = "951 50 81335"
+
+    const onPreesable = () => {
+        navigation.navigate('Tracker', {
+            coordenadas: coords,
+            numero: numero
+        })
+    }
 
     const handleMapPress = async (event) => {
         const { latitude, longitude } = event.nativeEvent.coordinate;
@@ -50,7 +58,7 @@ export const Order = ({ navigation, route}) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try{
+            try {
                 const idEnvio = (await getDoc(doc(db, 'Usuario', auth.currentUser.uid))).data().idEnvio;
                 const envio = (await getDoc(doc(db, 'Envio', idEnvio))).data();
                 const address = `${envio.calle} ${envio.numero}, ${envio.colonia}, ${envio.codigoPostal} ${envio.ciudad}, ${envio.estado}`;
@@ -60,9 +68,9 @@ export const Order = ({ navigation, route}) => {
 
                 const response = await Geocoder.from(address)
                 const { lat, lng } = response.results[0].geometry.location;
-                setCoords({ latitude: lat, longitude: lng});
-                setRegion({latitude: lat, longitude: lng, latitudeDelta: 0.01, longitudeDelta: 0.01});
-            } catch(e){
+                setCoords({ latitude: lat, longitude: lng });
+                setRegion({ latitude: lat, longitude: lng, latitudeDelta: 0.01, longitudeDelta: 0.01 });
+            } catch (e) {
                 console.log('Error al obtener la dirección: ' + e);
             }
         }
@@ -70,34 +78,39 @@ export const Order = ({ navigation, route}) => {
         fetchData();
     }, []);
 
-    return(
-        <View style={{flex: 1}}>
+
+    return (
+        <View style={{ flex: 1 }}>
             {coords ? (
-                <MapView ref={mapView} style={{flex: 1}} initialRegion={region} onPress={handleMapPress}>
-                    <Marker coordinate={coords}/>
+                <MapView ref={mapView} style={{ flex: 1 }} initialRegion={region} onPress={handleMapPress}>
+                    <Marker coordinate={coords} />
                 </MapView>
             ) : (
                 <Text>Cargando...</Text>
             )}
 
-            <TouchableOpacity style={[styles.zoomButtons, {right: 20, bottom: 280}]} onPress={() => zoomIn()}>
-                <Text style={{fontSize: 18}}>+</Text>
+            <TouchableOpacity style={[styles.zoomButtons, { right: 20, bottom: 280 }]} onPress={() => zoomIn()}>
+                <Text style={{ fontSize: 18 }}>+</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.zoomButtons, {right: 20, bottom: 210}]} onPress={() => zoomOut()}>
-                <Text style={{fontSize: 18}}>-</Text>
+            <TouchableOpacity style={[styles.zoomButtons, { right: 20, bottom: 210 }]} onPress={() => zoomOut()}>
+                <Text style={{ fontSize: 18 }}>-</Text>
             </TouchableOpacity>
 
             <View style={styles.directionView}>
                 <View style={styles.directionCard}>
-                    <Text style={{fontWeight: 500, fontSize: 18}}>Dirección:</Text>
-                    <Text style={{fontSize: 16}}>{address}</Text>
-                    <TouchableOpacity style={styles.confirmButton} onPress={() => navigation.navigate('Tracker', coords, '951 508 1335')}>
+                    <Text style={{ fontWeight: 500, fontSize: 18 }}>Dirección:</Text>
+                    <Text style={{ fontSize: 16 }}>{address}</Text>
+                    <TouchableOpacity
+                        style={styles.confirmButton}
+                        onPress={onPreesable}
+                    >
                         <Text style={styles.confirmButtonText}>Confirmar dirección</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
@@ -109,7 +122,7 @@ const styles = StyleSheet.create({
         height: 60,
         borderRadius: 50,
         backgroundColor: 'white'
-    },  
+    },
     directionView: {
         position: 'absolute',
         width: '100%',

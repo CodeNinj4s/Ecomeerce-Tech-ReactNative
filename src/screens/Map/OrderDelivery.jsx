@@ -6,16 +6,20 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions'
 import GOOGLE_API_KEY from '../../helpers/maps'
 import icons from '../../../assets/icons/icons,'
+
+
 import {
-    Image, Text, View, TouchableOpacity
+    Image, Text, View, TouchableOpacity, Linking
 } from 'react-native';
-export const OrderDelivery = ({ navigation }) => {
+
+export const OrderDelivery = ({ navigation, route }) => {
+    // const route = useRoute();
+    const { coordenadas, numero } = route.params;
     const mapView = useRef()
     const [streetName, setStreetName] = useState("")
     const [fromLocation, setFromLocation] = useState(null)
     const [toLocation, setToLocation] = useState(null)
     const [region, setRegion] = useState(null)
-
     const [duration, setDuration] = useState(0)
     const [isReady, setIsReady] = useState(false)
     const [angle, setAngle] = useState(0)
@@ -31,8 +35,8 @@ export const OrderDelivery = ({ navigation }) => {
     // };
 
     const destinationLocationData = {
-        latitude: 17.056969,
-        longitude: -96.730048,
+        latitude: coordenadas.latitude,
+        longitude: coordenadas.longitude,
     };
 
 
@@ -51,8 +55,27 @@ export const OrderDelivery = ({ navigation }) => {
     //     return () => clearInterval(locationUpdateInterval);
     // }, []);
 
+
+    // function actualizarUbicacionRepartidor() {
+    //     const tabla = "Repartidor"; // Reemplaza "repartidores" con el nombre de la colección donde almacenas a los repartidores.
+    //     const repartidorId = "gI0sUAEOk8zkxaBrkce4"; // Reemplaza "repartidor_id" con el ID del repartidor que deseas actualizar.
+
+    //     // Obtiene la referencia al documento del repartidor que deseas actualizar.
+    //     const repartidorRef = doc(db, tabla, repartidorId);
+
+    //     // Actualiza los campos de ubicación del repartidor.
+    //     updateDoc(repartidorRef, { latitude: currentLocation.gps.latitude, longitude: currentLocation.gps.longitude })
+    //         .then(() => {
+    //             console.log("Ubicación del repartidor actualizada exitosamente");
+    //         })
+    //         .catch((error) => {
+    //             console.log("Error al actualizar la ubicación del repartidor:", error);
+    //         });
+    // }
+
     useEffect(() => {
         setCurrentLocation();
+        // actualizarUbicacionRepartidor()
     }, [currentLocation]);
 
     function setCurrentLocation() {
@@ -75,6 +98,8 @@ export const OrderDelivery = ({ navigation }) => {
         setRegion(mapRegion);
         setStoreLocation(storeLocationData);
         // console.log('hola');
+        // Actualizar la ubicación del repartidor en Firebase Realtime Database
+
     }
 
     function calculateAngle(coordinates) {
@@ -256,6 +281,29 @@ export const OrderDelivery = ({ navigation }) => {
     }
 
 
+
+
+    const formatPhoneNumber = (phoneNumber) => {
+        // Remove all non-numeric characters from the phone number
+        return phoneNumber.replace(/\D/g, '');
+    };
+
+    const handleCallButtonPress = async () => {
+        if (numero) {
+            const formattedNumber = formatPhoneNumber(numero);
+            const phoneNumberUrl = `tel:${formattedNumber}`;
+            try {
+                await Linking.openURL(phoneNumberUrl);
+            } catch (error) {
+                console.warn('Error occurred while opening the URL:', error.message);
+                // You can handle the error here as needed, such as showing a user-friendly error message.
+            }
+        } else {
+            console.warn('El número de teléfono está vacío o no es válido.');
+        }
+    };
+
+
     function renderDestinationHeader() {
         return (
             <View
@@ -366,7 +414,7 @@ export const OrderDelivery = ({ navigation }) => {
                                 justifyContent: 'center',
                                 borderRadius: 10
                             }}
-                            onPress={() => navigation.navigate("MainStore")}
+                            onPress={handleCallButtonPress}
                         >
                             <Text style={{ color: theme.colors.background }}>Llama</Text>
                         </TouchableOpacity>
