@@ -31,7 +31,7 @@ const useCurrentLocation = () => {
                     {
                         accuracy: Location.Accuracy.High,
                         timeInterval: 5000, // Cada 5 segundos se actualiza la ubicación
-                        distanceInterval: 10, // Cada 
+                        distanceInterval: 10, 
                     },
                     (location) => {
                         setCurrentLocationData({

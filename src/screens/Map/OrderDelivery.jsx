@@ -6,7 +6,8 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions'
 import GOOGLE_API_KEY from '../../helpers/maps'
 import icons from '../../../assets/icons/icons,'
-
+import { db } from '../../../database/firebase';
+import { onSnapshot, doc, updateDoc } from 'firebase/firestore';
 
 import {
     Image, Text, View, TouchableOpacity, Linking
@@ -56,26 +57,26 @@ export const OrderDelivery = ({ navigation, route }) => {
     // }, []);
 
 
-    // function actualizarUbicacionRepartidor() {
-    //     const tabla = "Repartidor"; // Reemplaza "repartidores" con el nombre de la colección donde almacenas a los repartidores.
-    //     const repartidorId = "gI0sUAEOk8zkxaBrkce4"; // Reemplaza "repartidor_id" con el ID del repartidor que deseas actualizar.
+    function actualizarUbicacionRepartidor() {
+        const tabla = "Repartidor"; // Reemplaza "repartidores" con el nombre de la colección donde almacenas a los repartidores.
+        const repartidorId = "gI0sUAEOk8zkxaBrkce4"; // Reemplaza "repartidor_id" con el ID del repartidor que deseas actualizar.
 
-    //     // Obtiene la referencia al documento del repartidor que deseas actualizar.
-    //     const repartidorRef = doc(db, tabla, repartidorId);
+        // Obtiene la referencia al documento del repartidor que deseas actualizar.
+        const repartidorRef = doc(db, tabla, repartidorId);
 
-    //     // Actualiza los campos de ubicación del repartidor.
-    //     updateDoc(repartidorRef, { latitude: currentLocation.gps.latitude, longitude: currentLocation.gps.longitude })
-    //         .then(() => {
-    //             console.log("Ubicación del repartidor actualizada exitosamente");
-    //         })
-    //         .catch((error) => {
-    //             console.log("Error al actualizar la ubicación del repartidor:", error);
-    //         });
-    // }
+        // Actualiza los campos de ubicación del repartidor.
+        updateDoc(repartidorRef, { latitude: currentLocation.gps.latitude, longitude: currentLocation.gps.longitude })
+            .then(() => {
+                console.log("Ubicación del repartidor actualizada exitosamente");
+            })
+            .catch((error) => {
+                console.log("Error al actualizar la ubicación del repartidor:", error);
+            });
+    }
 
     useEffect(() => {
         setCurrentLocation();
-        // actualizarUbicacionRepartidor()
+        actualizarUbicacionRepartidor()
     }, [currentLocation]);
 
     function setCurrentLocation() {
