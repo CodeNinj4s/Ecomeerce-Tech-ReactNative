@@ -10,6 +10,7 @@ import { MainStore } from "./src/screens/MainStore";
 import { OrderDelivery } from "./src/screens/Map/OrderDelivery";
 
 import { ProductBag } from "./src/screens/ProductBag";
+import { ClienteTracker } from "./src/screens/Map/ClienteTracker";
 
 
 const Stack = createNativeStackNavigator();
@@ -19,7 +20,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="Tracker"
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Login" component={Login} />
@@ -29,6 +30,8 @@ export default function App() {
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="MainStore" component={MainStore} />
         <Stack.Screen name="ProductBag" component={ProductBag} />
+        <Stack.Screen name="ClienteTracker" component={ClienteTracker} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

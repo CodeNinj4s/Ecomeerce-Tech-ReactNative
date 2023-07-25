@@ -6,9 +6,13 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions'
 import GOOGLE_API_KEY from '../../helpers/maps'
 import icons from '../../../assets/icons/icons,'
+import { updateDoc, doc } from "firebase/firestore";
+import { db } from "../../../database/firebase";
 import {
     Image, Text, View, TouchableOpacity
 } from 'react-native';
+import { Linking } from 'react-native';
+
 export const OrderDelivery = ({ navigation }) => {
     const mapView = useRef()
     const [streetName, setStreetName] = useState("")
@@ -51,8 +55,27 @@ export const OrderDelivery = ({ navigation }) => {
     //     return () => clearInterval(locationUpdateInterval);
     // }, []);
 
+
+    // function actualizarUbicacionRepartidor() {
+    //     const tabla = "Repartidor"; // Reemplaza "repartidores" con el nombre de la colección donde almacenas a los repartidores.
+    //     const repartidorId = "gI0sUAEOk8zkxaBrkce4"; // Reemplaza "repartidor_id" con el ID del repartidor que deseas actualizar.
+
+    //     // Obtiene la referencia al documento del repartidor que deseas actualizar.
+    //     const repartidorRef = doc(db, tabla, repartidorId);
+
+    //     // Actualiza los campos de ubicación del repartidor.
+    //     updateDoc(repartidorRef, { latitude: currentLocation.gps.latitude, longitude: currentLocation.gps.longitude })
+    //         .then(() => {
+    //             console.log("Ubicación del repartidor actualizada exitosamente");
+    //         })
+    //         .catch((error) => {
+    //             console.log("Error al actualizar la ubicación del repartidor:", error);
+    //         });
+    // }
+
     useEffect(() => {
         setCurrentLocation();
+        // actualizarUbicacionRepartidor()
     }, [currentLocation]);
 
     function setCurrentLocation() {
@@ -75,6 +98,8 @@ export const OrderDelivery = ({ navigation }) => {
         setRegion(mapRegion);
         setStoreLocation(storeLocationData);
         // console.log('hola');
+        // Actualizar la ubicación del repartidor en Firebase Realtime Database
+
     }
 
     function calculateAngle(coordinates) {
@@ -256,6 +281,13 @@ export const OrderDelivery = ({ navigation }) => {
     }
 
 
+    function handleCallButtonPress() {
+        const phoneNumber = '1234567890'; // Coloca aquí el número de teléfono de la tienda de entrega
+
+        // Reemplaza 'tel:' con 'telprompt:' si deseas mostrar un cuadro de diálogo de confirmación antes de realizar la llamada.
+        Linking.openURL(`tel:${phoneNumber}`);
+    }
+
     function renderDestinationHeader() {
         return (
             <View
@@ -366,7 +398,7 @@ export const OrderDelivery = ({ navigation }) => {
                                 justifyContent: 'center',
                                 borderRadius: 10
                             }}
-                            onPress={() => navigation.navigate("MainStore")}
+                            onPress={handleCallButtonPress}
                         >
                             <Text style={{ color: theme.colors.background }}>Llama</Text>
                         </TouchableOpacity>
