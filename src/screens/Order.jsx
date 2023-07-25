@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { auth, db } from '../../database/firebase';
-import { getDoc, doc } from "firebase/firestore";
+import {  getDoc, doc, query, getDocs, where } from "firebase/firestore";
 import { theme } from '../core/theme.js';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import GOOGLE_API_KEY from '../helpers/maps';
 import Geocoder from 'react-native-geocoding';
+import { collection, addDoc } from 'firebase/firestore';
 
 export const Order = ({ navigation, route }) => {
     const mapView = useRef();
@@ -14,13 +15,6 @@ export const Order = ({ navigation, route }) => {
     const [address, setAddress] = useState();
     const [region, setRegion] = useState();
     const numero = "951 50 81335"
-
-    const onPreesable = () => {
-        navigation.navigate('Tracker', {
-            coordenadas: coords,
-            numero: numero
-        })
-    }
 
     const handleMapPress = async (event) => {
         const { latitude, longitude } = event.nativeEvent.coordinate;
@@ -55,6 +49,34 @@ export const Order = ({ navigation, route }) => {
         setRegion(newRegion)
         mapView.current.animateToRegion(newRegion, 200)
     }
+
+    const make_order = async () => {
+        // const q = query(collection(db, 'Usuario'), where('tipo', '==', 'repartidor'));
+        const querySnapshot = await getDocs(collection(db, 'Repartidor'));
+        const repartidores = [];
+
+        querySnapshot.forEach((doc) => {
+            repartidores.push(doc);
+        });
+
+        const max = repartidores.length - 1;
+        const index = Math.random() * (max - 0) + 0;
+        const idRepartidor = repartidores[index].id;
+
+        const orden = await addDoc(collection(db, 'Orden'), {
+            fecha: new Date().toUTCString(),
+            idCliente: auth.currentUser.uid,
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            idRepartidor: idRepartidor,
+            productos: bag_data.products,
+            total: total
+        });
+
+        navigation.navigate('Tracker', {coordenadas: coords, numero: '951 508 1335'})
+    }
+
+    console.log(new Date());
 
     useEffect(() => {
         const fetchData = async () => {
@@ -98,12 +120,9 @@ export const Order = ({ navigation, route }) => {
 
             <View style={styles.directionView}>
                 <View style={styles.directionCard}>
-                    <Text style={{ fontWeight: 500, fontSize: 18 }}>Dirección:</Text>
-                    <Text style={{ fontSize: 16 }}>{address}</Text>
-                    <TouchableOpacity
-                        style={styles.confirmButton}
-                        onPress={onPreesable}
-                    >
+                    <Text style={{fontWeight: 500, fontSize: 18}}>Dirección:</Text>
+                    <Text style={{fontSize: 16}}>{address}</Text>
+                    <TouchableOpacity style={styles.confirmButton} onPress={() => make_order()}>
                         <Text style={styles.confirmButtonText}>Confirmar dirección</Text>
                     </TouchableOpacity>
                 </View>
