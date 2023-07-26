@@ -10,17 +10,22 @@ import { auth } from '../../database/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 //Para el inicio de sesión con facebook
 import { LoginButton, AccessToken, } from 'react-native-fbsdk-next';
+import { FacebookAuthProvider, signInWithCredential, GoogleAuthProvider } from "firebase/auth";
 //Para el inicio de sesión con Google
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 //Para Google
-GoogleSignin.configure();
+GoogleSignin.configure({
+    webClientId: '784715387338-h33ji35l0n8q0kdsav0g2piaghbpl95c.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+  });
 
 export const Login = ({ navigation }) => {
     //Variable para guardar el token 
     const [fbAccessToken, setFbAccessToken] = React.useState(null);
+
     //Para google
     const [userInfo, setUserInfo] = React.useState(null);
-    
+
     const { onInputChange, correo, contraseña } = useForm({
         correo: 'njr01397@gmail.com',
         contraseña: '12345678',
@@ -46,20 +51,17 @@ export const Login = ({ navigation }) => {
 
     //Metodo de inicio de sesion con facebook
     const signInF = async (error, result) => {
-
         if (error) {
             console.log("login has error: " + result.error);
         } else if (result.isCancelled) {
             console.log("login is cancelled.");
         } else {
-            AccessToken.getCurrentAccessToken().then(
-                (data) => {
-                    console.log(data.accessToken.toString())
-                    setFbAccessToken(data.accessToken.toString());
-
-                }
-
-            )
+            data = await AccessToken.getCurrentAccessToken()
+            console.log(data.accessToken.toString())
+            setFbAccessToken(data.accessToken.toString());
+            const credencial = FacebookAuthProvider.credential(data.accessToken);
+            const user = await signInWithCredential(auth, credencial);
+            console.log(user);
             navigation.reset({
 
                 index: 0,
@@ -78,6 +80,15 @@ export const Login = ({ navigation }) => {
             //setState({ userInfo });
             setUserInfo(userInfo); // Update the state with the user info
             console.log(userInfo);
+            console.log();
+            //Obtener el token
+            const { idToken } = userInfo;
+            //Iniciar sesión con el token
+            const credencial = GoogleAuthProvider.credential(idToken);
+
+            const userCredential = await signInWithCredential(auth, credencial);
+            const user = userCredential.user;
+            console.log(user);
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'MainStore' }],

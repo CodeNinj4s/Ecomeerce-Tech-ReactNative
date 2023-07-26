@@ -8,55 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:784715387338:android:63d1f0446c58ac993f7f33",
+        "mobilesdk_app_id": "1:784715387338:android:fb59646ee3cee75b3f7f33",
         "android_client_info": {
-          "package_name": "com.anonymous.EcomeerceReactNativeApp"
+          "package_name": "com.equipo4.TEmergentes.EcomeerceReactNativeApp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "784715387338-btc2nga25dj5a85v66pf7sj8g717qa8c.apps.googleusercontent.com",
-          "client_type": 1,
+          "client_id": "784715387338-v2ollpd6p9iv7rdn5g71c8m7j5s8224h.apps.googleusercontent.com",
+          "client_type": 3,
           "android_info": {
-            "package_name": "com.anonymous.EcomeerceReactNativeApp",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "784715387338-h33ji35l0n8q0kdsav0g2piaghbpl95c.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAsHkvsRrO7fTinV1GayMpd6JVN8AhxI9Y"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "784715387338-4jq8tmicesuoa6uou5hhs0arhmkfb6uq.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:784715387338:android:0cd4f9fb33a4511c3f7f33",
-        "android_client_info": {
-          "package_name": "com.equipo4.EcomeerceReactNativeApp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "784715387338-03s3b4qunvp6vjk347a62us91oh24drn.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.equipo4.EcomeerceReactNativeApp",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "package_name": "com.equipo4.TEmergentes.EcomeerceReactNativeApp",
+            "certificate_hash": "721a438f074a7595ff549e0da561726557e59f02"
           }
         },
         {

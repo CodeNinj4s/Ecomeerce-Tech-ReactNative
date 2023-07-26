@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.equipo4.EcomeerceReactNativeApp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.equipo4.TEmergentes.EcomeerceReactNativeApp">
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -7,6 +7,7 @@
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="com.google.android.gms.auth.api.signin.permission.READ_PROFILE" />
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
