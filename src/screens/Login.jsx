@@ -7,9 +7,9 @@ import { Stack, Button } from '@react-native-material/core';
 import { theme } from '../core/theme';
 import { useForm } from '../hooks/useForm';
 import { auth } from '../../database/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
 //Para el inicio de sesión con facebook
-import { LoginButton, AccessToken, } from 'react-native-fbsdk-next';
+import { LoginButton, AccessToken, LoginManager } from 'react-native-fbsdk-next';
 import { FacebookAuthProvider, signInWithCredential, GoogleAuthProvider } from "firebase/auth";
 //Para el inicio de sesión con Google
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
@@ -17,7 +17,7 @@ import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-goo
 GoogleSignin.configure({
     webClientId: '784715387338-h33ji35l0n8q0kdsav0g2piaghbpl95c.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
     offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  });
+});
 
 export const Login = ({ navigation }) => {
     //Variable para guardar el token 
@@ -51,22 +51,50 @@ export const Login = ({ navigation }) => {
 
     //Metodo de inicio de sesion con facebook
     const signInF = async (error, result) => {
+        //const permissions = ['public_profile', 'email'];
+        //const result = await LoginManager.logInWithPermissions(permissions);
         if (error) {
             console.log("login has error: " + result.error);
         } else if (result.isCancelled) {
-            console.log("login is cancelled.");
-        } else {
+            console.log("login is cancelled." + error + "-->" + result.error);
+        } else {/*
             data = await AccessToken.getCurrentAccessToken()
             console.log(data.accessToken.toString())
             setFbAccessToken(data.accessToken.toString());
             const credencial = FacebookAuthProvider.credential(data.accessToken);
             const user = await signInWithCredential(auth, credencial);
-            console.log(user);
-            navigation.reset({
-
-                index: 0,
-                routes: [{ name: 'MainStore' }],
-            });
+            console.log(user.user.email);
+            // Consulta para verificar si el correo electrónico del usuario ya está registrado
+            const signInMethods = await fetchSignInMethodsForEmail(auth, user.user.email);
+            const isUserRegistered = signInMethods && signInMethods.length > 0;
+            */
+            data = await AccessToken.getCurrentAccessToken()
+            console.log(data.accessToken.toString())
+            setFbAccessToken(data.accessToken.toString());
+            const credencial = FacebookAuthProvider.credential(data.accessToken);
+            
+            // Obtener el correo electrónico del usuario de Facebook
+            const graphResponse = await fetch(
+                `https://graph.facebook.com/me?access_token=${data.accessToken}&fields=email`
+            );
+            const userData = await graphResponse.json();
+            const user = await fetchSignInMethodsForEmail(auth, userData.email);
+    
+            // Consulta para verificar si el correo electrónico del usuario ya está registrado
+            const isUserRegistered = user && user.length > 0;
+            const usere = await signInWithCredential(auth, credencial);
+            if (!isUserRegistered) {
+                console.log("El usuario no está registrado.");
+                // El usuario no está registrado, redirigir a la pantalla de registro.
+                navigation.navigate('Register', { nombre: user.displayName, correo: user.email });
+            } else {
+                console.log("El usuario ya está registrado.");
+                // El usuario ya está registrado, redirigir a la pantalla principal.
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'MainStore' }],
+                });
+            }
         }
 
     }
@@ -79,13 +107,11 @@ export const Login = ({ navigation }) => {
             const userInfo = await GoogleSignin.signIn();
             //setState({ userInfo });
             setUserInfo(userInfo); // Update the state with the user info
-            console.log(userInfo);
-            console.log();
+            console.log(userInfo.idToken.toString);
             //Obtener el token
             const { idToken } = userInfo;
             //Iniciar sesión con el token
             const credencial = GoogleAuthProvider.credential(idToken);
-
             const userCredential = await signInWithCredential(auth, credencial);
             const user = userCredential.user;
             console.log(user);
