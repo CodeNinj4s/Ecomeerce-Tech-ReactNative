@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { auth, db } from '../../database/firebase';
-import {  getDoc, doc, query, getDocs, where } from "firebase/firestore";
+import { getDoc, doc, getDocs, deleteDoc } from "firebase/firestore";
 import { theme } from '../core/theme.js';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import GOOGLE_API_KEY from '../helpers/maps';
@@ -51,9 +51,9 @@ export const Order = ({ navigation, route }) => {
     }
 
     const make_order = async () => {
-        // const q = query(collection(db, 'Usuario'), where('tipo', '==', 'repartidor'));
         const querySnapshot = await getDocs(collection(db, 'Repartidor'));
         const repartidores = [];
+        const telefono = (await getDoc(doc(db, 'Usuario', auth.currentUser.uid))).data().telefono;
 
         querySnapshot.forEach((doc) => {
             repartidores.push(doc);
@@ -73,10 +73,47 @@ export const Order = ({ navigation, route }) => {
             total: total
         });
 
-        navigation.navigate('Tracker', {coordenadas: coords, numero: '951 508 1335'})
+        await deleteDoc(doc(db, 'Bolsa', auth.currentUser.uid));
+        send_message('52' + telefono);
+
+        navigation.navigate('Tracker', { coordenadas: coords, numero: '951 508 1335' })
     }
 
-    console.log(new Date());
+    const send_message = (telefono) => {
+        var botId = '110126298832457';
+        var phoneNbr = telefono;
+        var bearerToken = 'EAACS6Mbj7RYBOwhAJebYhBWiwgpYNGQKtt2HJmmrDcN0RLMYZAPwgXrV3iyA4Kg1L1ROKjhsue8APV5j6iDT4oA1hhpufq1VKaIoNLaP2D3Fqe5HTLpBCKuV1vYhCyDjiZARpx1RZAgOSdIXTLxvs9WmKkEIRugqaw8am9zhqi7YuJM0s1pkik0DknKPWaVTwrRFnLJBBIKwzjjNYwZD';
+        var url = 'https://graph.facebook.com/v17.0/' + botId + '/messages';
+
+        var data = {
+            messaging_product: 'whatsapp',
+            to: phoneNbr,
+            type: 'template',
+            template: {
+                name: 'hello_world',
+                language: { code: 'en_US' }
+            }
+        };
+
+        var postReq = {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + bearerToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+            json: true
+        };
+
+        fetch(url, postReq)
+            .then(data => {
+                return data.json()
+            })
+            .then(res => {
+                console.log(res)
+            })
+            .catch(error => console.log(error));
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -120,8 +157,8 @@ export const Order = ({ navigation, route }) => {
 
             <View style={styles.directionView}>
                 <View style={styles.directionCard}>
-                    <Text style={{fontWeight: 500, fontSize: 18}}>Dirección:</Text>
-                    <Text style={{fontSize: 16}}>{address}</Text>
+                    <Text style={{ fontWeight: 500, fontSize: 18 }}>Dirección:</Text>
+                    <Text style={{ fontSize: 16 }}>{address}</Text>
                     <TouchableOpacity style={styles.confirmButton} onPress={() => make_order()}>
                         <Text style={styles.confirmButtonText}>Confirmar dirección</Text>
                     </TouchableOpacity>

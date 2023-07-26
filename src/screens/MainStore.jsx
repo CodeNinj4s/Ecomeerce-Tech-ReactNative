@@ -90,7 +90,7 @@ export const MainStore = ({ navigation }) => {
             </ScrollView>
 
 
-            <TouchableOpacity style={styles.orderButton}>
+            <TouchableOpacity style={styles.orderButton} onPress={() => navigation.navigate('ClienteTracker')}>
                 <IconComponentProvider IconComponent={MaterialCommunityIcons}>
                     <Icon name='truck-fast' size={48} color='white' />
                 </IconComponentProvider>
