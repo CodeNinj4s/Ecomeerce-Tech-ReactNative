@@ -8,8 +8,19 @@ import { theme } from '../core/theme';
 import { useForm } from '../hooks/useForm';
 import { auth } from '../../database/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+//Para el inicio de sesión con facebook
+import { LoginButton, AccessToken, } from 'react-native-fbsdk-next';
+//Para el inicio de sesión con Google
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
+//Para Google
+GoogleSignin.configure();
 
 export const Login = ({ navigation }) => {
+    //Variable para guardar el token 
+    const [fbAccessToken, setFbAccessToken] = React.useState(null);
+    //Para google
+    const [userInfo, setUserInfo] = React.useState(null);
+    
     const { onInputChange, correo, contraseña } = useForm({
         correo: 'njr01397@gmail.com',
         contraseña: '12345678',
@@ -26,11 +37,67 @@ export const Login = ({ navigation }) => {
 
                 index: 0,
                 routes: [{ name: 'MainStore' }],
-              });
+            });
         } catch (err) {
             console.log('Erroe al iniciar sesion', err)
         }
-      
+
+    };
+
+    //Metodo de inicio de sesion con facebook
+    const signInF = async (error, result) => {
+
+        if (error) {
+            console.log("login has error: " + result.error);
+        } else if (result.isCancelled) {
+            console.log("login is cancelled.");
+        } else {
+            AccessToken.getCurrentAccessToken().then(
+                (data) => {
+                    console.log(data.accessToken.toString())
+                    setFbAccessToken(data.accessToken.toString());
+
+                }
+
+            )
+            navigation.reset({
+
+                index: 0,
+                routes: [{ name: 'MainStore' }],
+            });
+        }
+
+    }
+
+    //Metodo para iniciar sesion con Google
+    const signInG = async () => {
+
+        try {
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            //setState({ userInfo });
+            setUserInfo(userInfo); // Update the state with the user info
+            console.log(userInfo);
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'MainStore' }],
+            });
+        } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                console.log("Se ha cancelado el inicio de sesion");
+                // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation (e.g. sign in) is in progress already
+                console.log("En proceso");
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                console.log("Servicios de google play requeridos");
+                // play services not available or outdated
+            } else {
+                // some other error happened
+                console.log(error);
+                console.log(error.code);
+            }
+        }
     };
 
     return (
@@ -82,11 +149,23 @@ export const Login = ({ navigation }) => {
                 </Stack>
             </View>
             <View style={styles.footer}>
-                <TouchableText>
-                    {/* <Text>O inicia sesion con una red social</Text> */}
+                <TouchableText onPress={handleLogin}>
+                    <Text>O inicia sesion con una red social</Text>
                 </TouchableText>
+                <View style={styles.icons}>
+                    <GoogleSigninButton
+                        style={styles.google}
+                        onPress={signInG}
+                    />
+                    <LoginButton
+                        style={styles.facebook}
+                        onLoginFinished={signInF}
+                        onLogoutFinished={() => {
+                            setFbAccessToken(null);
+                            console.log("logout.")
+                        }} />
 
-                <View style={styles.icons}></View>
+                </View>
             </View>
         </KeyboardAvoidingView>
     );
@@ -106,15 +185,15 @@ const styles = StyleSheet.create({
         width: '70%',
     },
     facebook: {
-        width: 90,
+        width: 100,
         height: 60,
-        backgroundColor: 'white',
+        backgroundColor: 'blue',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 15,
     },
     google: {
-        width: 90,
+        width: 100,
         height: 60,
         backgroundColor: 'white',
         justifyContent: 'center',

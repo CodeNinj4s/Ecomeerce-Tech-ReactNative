@@ -18,16 +18,43 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.INTERNET"
+      ],
+      "package": "com.equipo4.EcomeerceReactNativeApp",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": ""
-    }
+    },
+    "plugins": [
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "235219742758175",
+          "clientToken": "f1c9bd26c79648899f2d2a19beb94485",
+          "displayName": "App de prueba",
+          "scheme": "fb235219742758175"
+        }
+      ],
+      ["@react-native-google-signin/google-signin"]
+    ]
   }
 }

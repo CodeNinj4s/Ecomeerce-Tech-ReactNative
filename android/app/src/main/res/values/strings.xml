@@ -1,0 +1,8 @@
+<resources>
+  <string name="app_name">Ecomeerce-ReactNative-App</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="facebook_app_id">235219742758175</string>
+  <string name="facebook_client_token">f1c9bd26c79648899f2d2a19beb94485</string>
+  <string name="fb_login_protocol_scheme">fb235219742758175</string>
+</resources>

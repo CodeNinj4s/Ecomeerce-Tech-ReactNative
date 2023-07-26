@@ -11,11 +11,47 @@ import { OrderDelivery } from "./src/screens/Map/OrderDelivery";
 import { Order } from "./src/screens/Order";
 import { ProductBag } from "./src/screens/ProductBag";
 import { ClienteTracker } from "./src/screens/Map/ClienteTracker";
-
+//Para el cierre de sesion de Fb
+import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
+//Para la pantalla de inicio
+import { Image } from 'react-native';
+import React, { useEffect } from 'react';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  //Para verificar si hay una sesion de facebook inciada
+  // Variable para el token de facebook
+  const [fbAccessToken, setFbAccessToken] = React.useState(null);
+  const [initializing, setInitializing] = React.useState(true);
+
+  useEffect(() => {
+    // Verifica si hay sesion iniciada
+    AccessToken.getCurrentAccessToken().then((data) => {
+      if (data && data.accessToken) {
+        // se guarda el token
+        setFbAccessToken(data.accessToken.toString());
+        setInitializing(false);
+      } else {
+        setInitializing(false);
+      }
+    });
+  }, []);
+
+  if (initializing) {
+    return (
+      <View style={styles.container}>
+        <Image source={require('./assets/images/6136431.png')} style={styles.logo} />
+      </View>
+    );
+  }
+
+  // Si hay un token guardado, cierra la sesion
+  if (fbAccessToken) {
+    LoginManager.logOut();
+    // Limpia la variable
+    setFbAccessToken(null);
+  }
 
   return (
     <NavigationContainer>
@@ -37,3 +73,16 @@ export default function App() {
     </NavigationContainer>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF', // Change to the desired background color for the splash screen
+  },
+  logo: {
+    width: 200, // Adjust the width and height according to your logo image
+    height: 200,
+    resizeMode: 'contain',
+  },
+});
