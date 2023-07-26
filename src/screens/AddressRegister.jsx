@@ -10,7 +10,7 @@ import { addDoc, collection, setDoc, doc } from '@firebase/firestore';
 
 
 export const AddressRegister = ({ navigation, route }) => {
-    const { nombre, correo, pass } = route.params;
+    const { nombre, correo, pass, numero_tel } = route.params;
 
     const { onInputChange, estado, ciudad, colonia, calle, numero, cp } = useForm({
         estado: '',
@@ -29,7 +29,7 @@ export const AddressRegister = ({ navigation, route }) => {
                 const user_id = user.uid;
 
                 const envio = await addDoc(collection(db, "Envio"), {calle: calle, ciudad: ciudad, codigoPostal: cp, colonia: colonia, estado: estado, numero: numero});
-                await setDoc(doc(db, 'Usuario', user_id), { nombre: nombre, idEnvio: envio.id, tipo: 'cliente', password: pass });
+                await setDoc(doc(db, 'Usuario', user_id), { nombre: nombre, idEnvio: envio.id, tipo: 'cliente', password: pass, telefono: numero_tel });
                 // addDocumento("Usuario", { nombre: nombre, idEnvio: envio.id, tipo: 'cliente', password: pass })
 
                 navigation.navigate('MainStore');

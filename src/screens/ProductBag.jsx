@@ -50,8 +50,10 @@ export const ProductBag = ({ navigation }) => {
                     const update_data = onSnapshot(doc(db, 'Bolsa', auth.currentUser.uid), (querySnapshot) => {
                         const bag = (querySnapshot.data());
     
-                        set_bag_array(bag.products ? Object.values(bag.products) : []);
                         set_loading(false);
+                        if(bag !== undefined){
+                            set_bag_array(bag.products ? Object.values(bag.products) : []);
+                        }
                     });
 
                     return () => update_data();
