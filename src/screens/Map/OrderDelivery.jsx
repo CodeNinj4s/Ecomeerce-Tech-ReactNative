@@ -10,7 +10,7 @@ import { db } from '../../../database/firebase';
 import { onSnapshot, doc, updateDoc } from 'firebase/firestore';
 
 import {
-    Image, Text, View, TouchableOpacity, Linking
+    Image, Text, View, TouchableOpacity, Linking, ActivityIndicator
 } from 'react-native';
 
 export const OrderDelivery = ({ navigation, route }) => {
@@ -26,6 +26,10 @@ export const OrderDelivery = ({ navigation, route }) => {
     const [angle, setAngle] = useState(0)
     const currentLocation = useCurrentLocation()
     const [storeLocation, setStoreLocation] = useState(null);
+
+    const [repartidorData, setRepartidorData] = useState(null);
+    const repartidorId = "gI0sUAEOk8zkxaBrkce4"; // Replace with the actual ID of the delivery driver.
+    const tabla = "Repartidor"; // Replace with the actual collection name.
 
     // const currentLocationData = {
     //     streetName: 'Ruiz cortines',
@@ -57,6 +61,9 @@ export const OrderDelivery = ({ navigation, route }) => {
     // }, []);
 
 
+
+
+
     function actualizarUbicacionRepartidor() {
         const tabla = "Repartidor"; // Reemplaza "repartidores" con el nombre de la colección donde almacenas a los repartidores.
         const repartidorId = "gI0sUAEOk8zkxaBrkce4"; // Reemplaza "repartidor_id" con el ID del repartidor que deseas actualizar.
@@ -78,6 +85,26 @@ export const OrderDelivery = ({ navigation, route }) => {
         setCurrentLocation();
         actualizarUbicacionRepartidor()
     }, [currentLocation]);
+
+
+    useEffect(async () => {
+        const repartidorRef = doc(db, tabla, repartidorId);
+
+        const unsubscribe = await onSnapshot(repartidorRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const data = docSnapshot.data();
+                setRepartidorData(data);
+            } else {
+                setRepartidorData(null);
+            }
+        });
+
+        return () => {
+            // Unsubscribe from the snapshot listener when the component is unmounted.
+            unsubscribe();
+        };
+
+    }, [repartidorId, tabla]);
 
     function setCurrentLocation() {
         let fromLoc;
@@ -305,6 +332,7 @@ export const OrderDelivery = ({ navigation, route }) => {
     };
 
 
+
     function renderDestinationHeader() {
         return (
             <View
@@ -349,6 +377,13 @@ export const OrderDelivery = ({ navigation, route }) => {
     }
 
     function renderDeliveryInfo() {
+        if (repartidorData === null) {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            );
+        }
         return (
             <View
                 style={{
@@ -372,7 +407,7 @@ export const OrderDelivery = ({ navigation, route }) => {
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {/* Avatar */}
                         <Image
-                            source={icons.cena}
+                            source={icons.avatar_1}
                             style={{
                                 width: 55,
                                 height: 55,
@@ -383,7 +418,7 @@ export const OrderDelivery = ({ navigation, route }) => {
                         <View style={{ flex: 1, marginLeft: SIZES.padding }}>
                             {/* Name & Rating */}
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text >Cena</Text>
+                                <Text >{repartidorData.nombre}</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Image
                                         source={icons.star}
@@ -393,7 +428,7 @@ export const OrderDelivery = ({ navigation, route }) => {
                                 </View>
                             </View>
 
-                            <Text style={{ color: theme.colors.terciario }}>SWITECH</Text>
+                            <Text style={{ color: theme.colors.terciario }}>SWIFTECH</Text>
                         </View>
                     </View>
 
@@ -429,7 +464,7 @@ export const OrderDelivery = ({ navigation, route }) => {
                                 justifyContent: 'center',
                                 borderRadius: 10
                             }}
-                            onPress={() => navigation.goBack()}
+                            onPress={() => navigation.navigate('MainStore')}
                         >
                             <Text style={{ color: theme.colors.background }}>Cancelar</Text>
                         </TouchableOpacity>
