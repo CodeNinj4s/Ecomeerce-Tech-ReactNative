@@ -16,7 +16,9 @@ import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
 //Para la pantalla de inicio
 import { Image } from 'react-native';
 import React, { useEffect } from 'react';
-
+//FB Y G
+import { RegisterFBG } from "./src/screens/RegisterFBG";
+import { AddressRegisterFBG } from "./src/screens/AddressRegisterFBG";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -68,7 +70,8 @@ export default function App() {
         <Stack.Screen name="ProductBag" component={ProductBag} />
         <Stack.Screen name="ClienteTracker" component={ClienteTracker} />
         <Stack.Screen name="Order" component={Order} />
-
+        <Stack.Screen name="RegisterFBG" component={RegisterFBG} />
+        <Stack.Screen name="AddressRegisterFBG" component={AddressRegisterFBG} />
       </Stack.Navigator>
     </NavigationContainer>
   );

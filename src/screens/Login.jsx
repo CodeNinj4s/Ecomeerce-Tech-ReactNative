@@ -72,21 +72,21 @@ export const Login = ({ navigation }) => {
             console.log(data.accessToken.toString())
             setFbAccessToken(data.accessToken.toString());
             const credencial = FacebookAuthProvider.credential(data.accessToken);
-            
+
             // Obtener el correo electrónico del usuario de Facebook
             const graphResponse = await fetch(
                 `https://graph.facebook.com/me?access_token=${data.accessToken}&fields=email`
             );
             const userData = await graphResponse.json();
             const user = await fetchSignInMethodsForEmail(auth, userData.email);
-    
+
             // Consulta para verificar si el correo electrónico del usuario ya está registrado
             const isUserRegistered = user && user.length > 0;
             const usere = await signInWithCredential(auth, credencial);
             if (!isUserRegistered) {
                 console.log("El usuario no está registrado.");
                 // El usuario no está registrado, redirigir a la pantalla de registro.
-                navigation.navigate('Register', { nombre: user.displayName, correo: user.email });
+                navigation.navigate('RegisterFBG', { nombre: user.displayName, correo: user.email });
             } else {
                 console.log("El usuario ya está registrado.");
                 // El usuario ya está registrado, redirigir a la pantalla principal.
@@ -112,13 +112,32 @@ export const Login = ({ navigation }) => {
             const { idToken } = userInfo;
             //Iniciar sesión con el token
             const credencial = GoogleAuthProvider.credential(idToken);
+            //Verifica si ya se encuentra
+            // Obtener el correo electrónico del usuario de Google
+            const { email } = userInfo.user;
+            // Consulta para verificar si el correo electrónico del usuario ya está registrado
+            const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+            const isUserRegistered = signInMethods && signInMethods.length > 0;
+            //Users
             const userCredential = await signInWithCredential(auth, credencial);
             const user = userCredential.user;
-            console.log(user);
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'MainStore' }],
-            });
+            if (!isUserRegistered) {
+                console.log("El usuario no está registrado.");
+
+                // El usuario no está registrado, redirigir 'RegisterFBG'
+                navigation.navigate('RegisterFBG', {
+                    nombre: userInfo.user.displayName,
+                    correo: email,
+                });
+            } else {
+
+
+                console.log(user);
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'MainStore' }],
+                });
+            }
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 console.log("Se ha cancelado el inicio de sesion");
