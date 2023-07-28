@@ -82,7 +82,7 @@ export const Order = ({ navigation, route }) => {
     const send_message = (telefono) => {
         var botId = '110126298832457';
         var phoneNbr = telefono;
-        var bearerToken = 'EAACS6Mbj7RYBOwhAJebYhBWiwgpYNGQKtt2HJmmrDcN0RLMYZAPwgXrV3iyA4Kg1L1ROKjhsue8APV5j6iDT4oA1hhpufq1VKaIoNLaP2D3Fqe5HTLpBCKuV1vYhCyDjiZARpx1RZAgOSdIXTLxvs9WmKkEIRugqaw8am9zhqi7YuJM0s1pkik0DknKPWaVTwrRFnLJBBIKwzjjNYwZD';
+        var bearerToken = 'EAACS6Mbj7RYBO0YJx1rAJRZBk7bdq6DgKHqIuX2KsbHFKHYriRoFivlPEpiK5zvh4DyypFZBw0ryEXLPZArsrbdogNOuI4ZADuyG7zAdba9IDHB8jAddOwOGMUqe8cTnvTYVuGZCLAEvNRCuPDuvPSPqRyNKFj4ZCH16zCZC9ZClCEjVPlveTSKXi3NAA3RnmhrglcQdPy215tJjAcWPZBQcZD';
         var url = 'https://graph.facebook.com/v17.0/' + botId + '/messages';
 
         var data = {
