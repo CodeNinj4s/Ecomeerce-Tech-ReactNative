@@ -10,7 +10,7 @@ import { db } from '../../../database/firebase';
 import { onSnapshot, doc, updateDoc } from 'firebase/firestore';
 
 import {
-    Image, Text, View, TouchableOpacity, Linking, ActivityIndicator
+    Image, Text, View, TouchableOpacity, Linking
 } from 'react-native';
 
 export const OrderDelivery = ({ navigation, route }) => {
@@ -87,10 +87,10 @@ export const OrderDelivery = ({ navigation, route }) => {
     }, [currentLocation]);
 
 
-    useEffect(async () => {
+    useEffect(() => {
         const repartidorRef = doc(db, tabla, repartidorId);
 
-        const unsubscribe = await onSnapshot(repartidorRef, (docSnapshot) => {
+        const unsubscribe = onSnapshot(repartidorRef, (docSnapshot) => {
             if (docSnapshot.exists()) {
                 const data = docSnapshot.data();
                 setRepartidorData(data);
@@ -98,6 +98,7 @@ export const OrderDelivery = ({ navigation, route }) => {
                 setRepartidorData(null);
             }
         });
+
 
         return () => {
             // Unsubscribe from the snapshot listener when the component is unmounted.
@@ -377,13 +378,6 @@ export const OrderDelivery = ({ navigation, route }) => {
     }
 
     function renderDeliveryInfo() {
-        if (repartidorData === null) {
-            return (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <ActivityIndicator size="large" color="#0000ff" />
-                </View>
-            );
-        }
         return (
             <View
                 style={{
@@ -418,7 +412,7 @@ export const OrderDelivery = ({ navigation, route }) => {
                         <View style={{ flex: 1, marginLeft: SIZES.padding }}>
                             {/* Name & Rating */}
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text >{repartidorData.nombre}</Text>
+                                <Text >{repartidorData === null ? '' : repartidorData.nombre}</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Image
                                         source={icons.star}
