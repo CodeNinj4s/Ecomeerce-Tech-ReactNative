@@ -99,6 +99,7 @@ export const OrderDelivery = ({ navigation, route }) => {
             }
         });
 
+
         return () => {
             // Unsubscribe from the snapshot listener when the component is unmounted.
             unsubscribe();
@@ -411,7 +412,7 @@ export const OrderDelivery = ({ navigation, route }) => {
                         <View style={{ flex: 1, marginLeft: SIZES.padding }}>
                             {/* Name & Rating */}
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text >{repartidorData.nombre}</Text>
+                                <Text >{repartidorData === null ? '' : repartidorData.nombre}</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Image
                                         source={icons.star}
